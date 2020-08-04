@@ -140,5 +140,5 @@ func (s *Settings) LoadLanguageScreen(w fyne.Window) fyne.CanvasObject {
 }
 
 func (s *Settings) LanguageIcon() fyne.Resource {
-	return theme.NewThemedResource(languageIcon, nil)
+	return theme.NewThemedResource(resourceSlashSvg, nil)
 }
