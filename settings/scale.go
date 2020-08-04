@@ -1,7 +1,6 @@
 package settings
 
 import (
-	"fmt"
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/layout"
@@ -29,44 +28,34 @@ func (s *Settings) appliedScale(value float32) {
 	}
 }
 
-func (s *Settings) chooseScale(value float32) {
-	s.config.System.Setting.Scale = value
-
+func (s *Settings) chooseScale(value string) {
 	for _, scale := range scales {
-		if scale.scale == value {
-			scale.button.Style = widget.PrimaryButton
-			fmt.Println(scale.name)
-		} else {
-			scale.button.Style = widget.DefaultButton
+		if scale.name == value {
+			s.config.System.Setting.Scale = scale.scale
 		}
-
-		scale.button.Refresh()
 	}
 }
-
-func (s *Settings) makeScaleButtons() []fyne.CanvasObject {
-	var buttons = make([]fyne.CanvasObject, len(scales))
-	for i, scale := range scales {
-		value := scale.scale
-		button := widget.NewButton(scale.name, func() {
-			s.chooseScale(value)
-		})
-		if s.config.System.Setting.Scale == scale.scale {
-			button.Style = widget.PrimaryButton
+func (s *Settings) makeScaleSelect(sc float32) *widget.Select {
+	var scaleNames []string
+	selected := ""
+	for _, scale := range scales {
+		scaleNames = append(scaleNames, scale.name)
+		if sc == scale.scale {
+			selected = scale.name
 		}
-
-		scale.button = button
-		buttons[i] = button
 	}
-
-	return buttons
+	scaleSelect := widget.NewSelect(scaleNames, func(v string) {
+		s.chooseScale(v)
+	})
+	scaleSelect.SetSelected(selected)
+	return scaleSelect
 }
 
-func (s *Settings) makeScaleGroup(scale float32) *widget.Group {
-	scalePreviewBox := fyne.NewContainerWithLayout(layout.NewGridLayout(5), s.makeScalePreviews(scale)...)
-	scaleBox := fyne.NewContainerWithLayout(layout.NewGridLayout(5), s.makeScaleButtons()...)
-
-	return widget.NewGroup("Scale", scalePreviewBox, scaleBox, newRefreshMonitor(s))
+func (s *Settings) makeScaleSetting(scale float32) fyne.CanvasObject {
+	scaleLabel := widget.NewLabel("Scale")
+	scaleSelect := s.makeScaleSelect(scale)
+	scaleBox := fyne.NewContainerWithLayout(layout.NewGridLayout(2), scaleLabel, scaleSelect)
+	return scaleBox
 }
 
 func (s *Settings) makeScalePreviews(value float32) []fyne.CanvasObject {

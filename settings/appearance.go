@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	"fyne.io/fyne"
-	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
@@ -16,8 +15,7 @@ import (
 // Settings gives access to user interfaces to control Fyne settings
 type Settings struct {
 	//fyneSettings app.SettingsSchema
-	config  config.Config
-	preview *canvas.Image
+	config config.Config
 }
 
 // NewSettings returns a new settings instance with the current configuration loaded
@@ -41,12 +39,13 @@ func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
 	//s.preview.FillMode = canvas.ImageFillContain
 
 	def := s.config.System.Setting.ThemeName
+
+	scale := s.makeScaleSetting(s.config.System.Setting.Scale)
 	themes := widget.NewSelect([]string{"dark", "light"}, s.chooseTheme)
 	themes.SetSelected(def)
-
-	scale := s.makeScaleGroup(w.Canvas().Scale())
-	scale.Append(widget.NewGroup("Theme", themes))
-
+	system := widget.NewGroup("System", scale)
+	system.Append(scale)
+	system.Append(themes)
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
 			_, err := config.Update(func(config *config.Config) {
@@ -62,8 +61,8 @@ func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
 			s.appliedScale(s.config.System.Setting.Scale)
 		}})
 
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(scale, bottom, nil, nil),
-		scale, bottom)
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(system, bottom, nil, nil),
+		system, bottom)
 }
 
 func (s *Settings) chooseTheme(name string) {
