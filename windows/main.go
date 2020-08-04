@@ -9,6 +9,8 @@ import (
 
 const Title = "InterPlanetaryVideoConversion"
 
+var Size = fyne.NewSize(800, 600)
+
 type MainFrame struct {
 	root fyne.Window
 }
@@ -22,6 +24,7 @@ func New() *MainFrame {
 		&widget.TabItem{Text: "Appearance", Icon: s.AppearanceIcon(), Content: appearance})
 	tabs.SetTabLocation(widget.TabLocationLeading)
 	win.SetContent(tabs)
+	win.Resize(Size)
 	return &MainFrame{root: win}
 	//app := app.New()
 	//s := settings.NewSettings()
