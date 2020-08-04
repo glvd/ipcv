@@ -20,8 +20,11 @@ func New() *MainFrame {
 	s := settings.NewSettings()
 
 	appearance := s.LoadAppearanceScreen(win)
+	language := s.LoadLanguageScreen(win)
 	tabs := widget.NewTabContainer(
-		&widget.TabItem{Text: "Appearance", Icon: s.AppearanceIcon(), Content: appearance})
+		&widget.TabItem{Text: "Appearance", Icon: s.AppearanceIcon(), Content: appearance},
+		&widget.TabItem{Text: "Language", Icon: s.LanguageIcon(), Content: language},
+	)
 	tabs.SetTabLocation(widget.TabLocationLeading)
 	win.SetContent(tabs)
 	win.Resize(Size)

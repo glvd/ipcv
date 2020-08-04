@@ -119,3 +119,26 @@ func (s *Settings) saveToFile(path string) error {
 
 	return encode.Encode(&s.fyneSettings)
 }
+
+func (s *Settings) LoadLanguageScreen(w fyne.Window) fyne.CanvasObject {
+	s.preview = canvas.NewImageFromResource(themeDarkPreview)
+	s.preview.FillMode = canvas.ImageFillContain
+
+	scale := s.makeScaleGroup(w.Canvas().Scale())
+	bottom := widget.NewHBox(layout.NewSpacer(),
+		&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
+			err := s.save()
+			if err != nil {
+				fyne.LogError("Failed on saving", err)
+			}
+
+			s.appliedScale(s.fyneSettings.Scale)
+		}})
+
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(scale, bottom, nil, nil),
+		scale, bottom, s.preview)
+}
+
+func (s *Settings) LanguageIcon() fyne.Resource {
+	return theme.NewThemedResource(languageIcon, nil)
+}
