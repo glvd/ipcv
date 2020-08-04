@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"fmt"
 	"fyne.io/fyne"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
@@ -12,6 +13,7 @@ import (
 type Settings struct {
 	//fyneSettings app.SettingsSchema
 	config config.Config
+	//preview *canvas.Image
 }
 
 // NewSettings returns a new settings instance with the current configuration loaded
@@ -30,7 +32,7 @@ func (s *Settings) AppearanceIcon() fyne.Resource {
 // LoadAppearanceScreen creates a new settings screen to handle appearance configuration
 func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
 
-	def := s.config.System.Theme
+	def := s.config.System.Setting.ThemeName
 	themes := widget.NewSelect([]string{"dark", "light"}, s.chooseTheme)
 	themes.SetSelected(def)
 
@@ -39,14 +41,15 @@ func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
 
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
-			_, err := config.Update(func(config *config.Config) {
+			updated, err := config.Update(func(config *config.Config) {
 				*config = s.config
 			})
 			if err != nil {
-				fyne.LogError("Failed on saving", err)
+				fyne.LogError("failed on update", err)
 			}
-
-			s.appliedScale(s.config.System.Scale)
+			s.config = updated
+			fmt.Printf("%+v\n", s.config)
+			s.appliedScale(s.config.System.Setting.Scale)
 		}})
 
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(scale, bottom, nil, nil),
@@ -54,20 +57,18 @@ func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
 }
 
 func (s *Settings) chooseTheme(name string) {
-	update, err := config.Update(func(config *config.Config) {
-		config.System.Theme = name
-	})
-	if err != nil {
-		return
+	s.config.System.Setting.ThemeName = name
+	switch name {
+	case "light":
+		fmt.Println("light")
+		//s.preview = canvas.NewImageFromResource(themeLightPreview)
+	default:
+		fmt.Println("default")
+		//s.preview = canvas.NewImageFromResource(themeDarkPreview)
 	}
-	s.config = update
-	//switch name {
-	//case "light":
-	//	s.preview.Resource = themeLightPreview
-	//default:
-	//	s.preview.Resource = themeDarkPreview
-	//}
+	fmt.Printf("%+v\n", s.config)
 	//canvas.Refresh(s.preview)
+
 }
 
 func (s *Settings) LoadLanguageScreen(w fyne.Window) fyne.CanvasObject {
@@ -81,7 +82,7 @@ func (s *Settings) LoadLanguageScreen(w fyne.Window) fyne.CanvasObject {
 				fyne.LogError("Failed on saving", err)
 			}
 
-			s.appliedScale(s.config.System.Scale)
+			s.appliedScale(s.config.System.Setting.Scale)
 		}})
 
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(scale, bottom, nil, nil),

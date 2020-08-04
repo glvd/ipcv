@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"fmt"
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/layout"
@@ -29,11 +30,12 @@ func (s *Settings) appliedScale(value float32) {
 }
 
 func (s *Settings) chooseScale(value float32) {
-	s.config.System.Scale = value
+	s.config.System.Setting.Scale = value
 
 	for _, scale := range scales {
 		if scale.scale == value {
 			scale.button.Style = widget.PrimaryButton
+			fmt.Println(scale.name)
 		} else {
 			scale.button.Style = widget.DefaultButton
 		}
@@ -49,7 +51,7 @@ func (s *Settings) makeScaleButtons() []fyne.CanvasObject {
 		button := widget.NewButton(scale.name, func() {
 			s.chooseScale(value)
 		})
-		if s.config.System.Scale == scale.scale {
+		if s.config.System.Setting.Scale == scale.scale {
 			button.Style = widget.PrimaryButton
 		}
 

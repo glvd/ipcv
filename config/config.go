@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fyne.io/fyne/app"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -18,8 +19,7 @@ const (
 type HardwareAcceleration string
 
 type System struct {
-	Theme                string
-	Scale                float32
+	Setting              app.SettingsSchema
 	Language             string
 	FFMPEG               string
 	HardwareAcceleration HardwareAcceleration
@@ -49,7 +49,10 @@ func load() *Config {
 func defaultConfig() *Config {
 	return &Config{
 		System: System{
-			Theme:                "light",
+			Setting: app.SettingsSchema{
+				ThemeName: "light",
+				Scale:     1,
+			},
 			Language:             "EN",
 			FFMPEG:               filepath.Clean("bin"),
 			HardwareAcceleration: CPUAcceleration,
