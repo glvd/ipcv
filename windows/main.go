@@ -19,7 +19,6 @@ type MainFrame struct {
 func New(config *config.Config) *MainFrame {
 	language := i18n.Load(config.System.Language)
 	win := app.New().NewWindow(language.Title)
-
 	s := settings.NewSettings()
 
 	appearance := s.LoadAppearanceScreen(win)
@@ -29,6 +28,7 @@ func New(config *config.Config) *MainFrame {
 		//&widget.TabItem{Text: "Language", Icon: s.LanguageIcon(), Content: language},
 	)
 	tabs.SetTabLocation(widget.TabLocationLeading)
+	win.SetIcon(resourceShipPng)
 	win.SetContent(tabs)
 	win.Resize(Size)
 	return &MainFrame{
