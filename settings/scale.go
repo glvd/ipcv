@@ -29,7 +29,7 @@ func (s *Settings) appliedScale(value float32) {
 }
 
 func (s *Settings) chooseScale(value float32) {
-	s.fyneSettings.Scale = value
+	s.config.System.Scale = value
 
 	for _, scale := range scales {
 		if scale.scale == value {
@@ -49,7 +49,7 @@ func (s *Settings) makeScaleButtons() []fyne.CanvasObject {
 		button := widget.NewButton(scale.name, func() {
 			s.chooseScale(value)
 		})
-		if s.fyneSettings.Scale == scale.scale {
+		if s.config.System.Scale == scale.scale {
 			button.Style = widget.PrimaryButton
 		}
 

@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	frame := windows.New(config.Load())
+	frame := windows.New(config.Mirror())
 	frame.Run()
 }

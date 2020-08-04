@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 const (
@@ -17,6 +18,8 @@ const (
 type HardwareAcceleration string
 
 type System struct {
+	Theme                string
+	Scale                float32
 	Language             string
 	FFMPEG               string
 	HardwareAcceleration HardwareAcceleration
@@ -27,6 +30,7 @@ type Config struct {
 }
 
 var _config = load()
+var configLock = &sync.RWMutex{}
 
 func load() *Config {
 	open, err := os.Open(".config")
@@ -45,6 +49,7 @@ func load() *Config {
 func defaultConfig() *Config {
 	return &Config{
 		System: System{
+			Theme:                "light",
 			Language:             "EN",
 			FFMPEG:               filepath.Clean("bin"),
 			HardwareAcceleration: CPUAcceleration,
@@ -52,18 +57,27 @@ func defaultConfig() *Config {
 	}
 }
 
-func Load() *Config {
-	if _config == nil {
-		return defaultConfig()
-	}
-	return _config
+func Mirror() (cfg Config) {
+	configLock.RLock()
+	cfg = *_config
+	configLock.RUnlock()
+	return
 }
 
-func Save(config *Config) error {
-	marshal, err := json.Marshal(config)
+func Update(f func(config *Config)) (Config, error) {
+	if f != nil {
+		configLock.Lock()
+		f(_config)
+		configLock.Unlock()
+	}
+	marshal, err := json.Marshal(_config)
 	if err != nil {
-		return err
+		return Mirror(), err
 	}
 
-	return ioutil.WriteFile(".config", marshal, 0755)
+	err = ioutil.WriteFile(".config", marshal, 0755)
+	if err != nil {
+		return Mirror(), err
+	}
+	return Mirror(), nil
 }
