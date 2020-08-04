@@ -4,13 +4,29 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
-var _config = load()
+const (
+	CPUAcceleration    HardwareAcceleration = "CPU"
+	AMDAcceleration    HardwareAcceleration = "AMD"
+	NvidiaAcceleration HardwareAcceleration = "Nvidia"
+	MacAcceleration    HardwareAcceleration = "Mac"
+)
+
+type HardwareAcceleration string
+
+type System struct {
+	Language             string
+	FFMPEG               string
+	HardwareAcceleration HardwareAcceleration
+}
 
 type Config struct {
-	Language string
+	System System
 }
+
+var _config = load()
 
 func load() *Config {
 	open, err := os.Open(".config")
@@ -28,7 +44,11 @@ func load() *Config {
 
 func defaultConfig() *Config {
 	return &Config{
-		Language: "EN",
+		System: System{
+			Language:             "EN",
+			FFMPEG:               filepath.Clean("bin"),
+			HardwareAcceleration: CPUAcceleration,
+		},
 	}
 }
 

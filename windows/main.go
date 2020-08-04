@@ -17,7 +17,7 @@ type MainFrame struct {
 }
 
 func New(config *config.Config) *MainFrame {
-	language := i18n.Load(config.Language)
+	language := i18n.Load(config.System.Language)
 	win := app.New().NewWindow(language.Title)
 
 	s := settings.NewSettings()
