@@ -25,6 +25,7 @@ func NewSettings() *Settings {
 	s := &Settings{
 		config: config.Mirror(),
 	}
+	//save config to global
 	s.save()
 	return s
 }
