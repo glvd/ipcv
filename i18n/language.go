@@ -2,6 +2,7 @@ package i18n
 
 import (
 	"github.com/BurntSushi/toml"
+	"os"
 	"path/filepath"
 )
 
@@ -9,6 +10,19 @@ const title = "InterPlanetaryVideoConversion"
 
 type Language struct {
 	Title string
+}
+
+func LoadSupportted() []string {
+	lang, err := os.Open("language")
+	if err != nil {
+		return []string{}
+	}
+	names, err := lang.Readdirnames(-1)
+	if err != nil {
+		return []string{}
+	}
+
+	return names
 }
 
 func Load(name string) *Language {
