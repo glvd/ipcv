@@ -17,15 +17,15 @@ import (
 type Settings struct {
 	//fyneSettings app.SettingsSchema
 	config     config.Config
-	language   i18n.Settings
+	lang       i18n.Settings
 	scaleItems []*scaleItems
 }
 
 // NewSettings returns a new settings instance with the current configuration loaded
 func NewSettings(language i18n.Settings) *Settings {
 	s := &Settings{
-		config:   config.Mirror(),
-		language: language,
+		config: config.Mirror(),
+		lang:   language,
 		scaleItems: []*scaleItems{
 			{scale: 0.5, name: language.System.ScaleItemTiny},
 			{scale: 0.8, name: language.System.ScaleItemSmall},
@@ -46,10 +46,10 @@ func (s *Settings) SettingIcon() fyne.Resource {
 
 // LoadSettingScreen creates a new settings screen to handle appearance configuration
 func (s *Settings) LoadSettingScreen(w fyne.Window) fyne.CanvasObject {
-	//------------------------------System------------------------------//
+	//------------------------------SettingSystem------------------------------//
 	scale := s.makeScaleSetting(s.config.System.Setting.Scale)
 	themes := s.makeThemeSetting(s.config.System.Setting.ThemeName)
-	system := widget.NewGroup(s.language.SystemName, scale, themes)
+	system := widget.NewGroup(s.lang.SystemTitle, scale, themes)
 
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
@@ -72,7 +72,7 @@ func (s *Settings) LoadSettingScreen(w fyne.Window) fyne.CanvasObject {
 
 func (s *Settings) chooseTheme(name string) {
 	switch name {
-	case s.language.System.ThemeSelectDark:
+	case s.lang.System.ThemeSelectDark:
 		s.config.System.Setting.ThemeName = "dark"
 	default:
 		s.config.System.Setting.ThemeName = "light"

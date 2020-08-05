@@ -6,26 +6,32 @@ import (
 	"path/filepath"
 )
 
-type System struct {
-	ThemeName        string
+type SettingSystem struct {
+	ThemeLabel       string
 	ThemeSelectDark  string
 	ThemeSelectLight string
-	ScaleName        string
+	ScaleLabel       string
 	ScaleItemTiny    string
 	ScaleItemSmall   string
 	ScaleItemNormal  string
 	ScaleItemLarge   string
 	ScaleItemHuge    string
-	Language         string
+	LanguageLabel    string
 }
 
 type Settings struct {
-	SystemName string
-	System     System
+	SystemTitle string
+	System      SettingSystem
+}
+
+type ConvertInput struct {
+	Label  string
+	Button string
 }
 
 type Converts struct {
-	Name string
+	Name  string
+	Input ConvertInput
 }
 
 type Language struct {
@@ -80,21 +86,27 @@ func defaultLanguage() *Language {
 		Title:       title,
 		SettingName: settingName,
 		Settings: Settings{
-			SystemName: systemName,
-			System: System{
-				ThemeName:        themeName,
+			SystemTitle: systemName,
+			System: SettingSystem{
+				ThemeLabel:       themeName,
 				ThemeSelectDark:  themeSelectDark,
 				ThemeSelectLight: themeSelectLight,
-				ScaleName:        scaleName,
+				ScaleLabel:       scaleName,
 				ScaleItemTiny:    scaleItemTiny,
 				ScaleItemSmall:   scaleItemSmall,
 				ScaleItemNormal:  scaleItemNormal,
 				ScaleItemLarge:   scaleItemLarge,
 				ScaleItemHuge:    scaleItemHuge,
-				Language:         language,
+				LanguageLabel:    language,
 			},
 		},
 		ConvertName: convertName,
-		Converts:    Converts{},
+		Converts: Converts{
+			Name: "Action",
+			Input: ConvertInput{
+				Label:  "Input",
+				Button: "Open",
+			},
+		},
 	}
 }

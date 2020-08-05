@@ -43,7 +43,7 @@ func (s *Settings) makeScaleSelect(sc float32) *widget.Select {
 }
 
 func (s *Settings) makeScaleSetting(scale float32) fyne.CanvasObject {
-	scaleLabel := widget.NewLabel(s.language.System.ScaleName)
+	scaleLabel := widget.NewLabel(s.lang.System.ScaleLabel)
 	scaleSelect := s.makeScaleSelect(scale)
 	return fyne.NewContainerWithLayout(layout.NewGridLayout(2), scaleLabel, scaleSelect)
 }

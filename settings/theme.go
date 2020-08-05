@@ -7,12 +7,12 @@ import (
 )
 
 func (s *Settings) makeThemeSetting(themeName string) fyne.CanvasObject {
-	themeLabel := widget.NewLabel(s.language.System.ThemeName)
+	themeLabel := widget.NewLabel(s.lang.System.ThemeLabel)
 	themeSelect := s.makeThemeSelect(themeName)
 	return fyne.NewContainerWithLayout(layout.NewGridLayout(2), themeLabel, themeSelect)
 }
 func (s *Settings) makeThemeSelect(name string) *widget.Select {
-	themeNames := []string{s.language.System.ThemeSelectDark, s.language.System.ThemeSelectLight}
+	themeNames := []string{s.lang.System.ThemeSelectDark, s.lang.System.ThemeSelectLight}
 	slt := widget.NewSelect(themeNames, func(v string) {
 		s.chooseTheme(v)
 	})
@@ -24,8 +24,8 @@ func (s *Settings) makeThemeSelect(name string) *widget.Select {
 func (s *Settings) getSelectIndex(name string) string {
 	switch name {
 	case "dark":
-		return s.language.System.ThemeSelectDark
+		return s.lang.System.ThemeSelectDark
 	default:
-		return s.language.System.ThemeSelectLight
+		return s.lang.System.ThemeSelectLight
 	}
 }
