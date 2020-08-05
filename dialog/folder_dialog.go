@@ -36,7 +36,7 @@ type folderDialog struct {
 
 // FolderDialog is a dialog containing a file picker for use in opening or saving files.
 type FolderDialog struct {
-	save             bool
+	//save             bool
 	callback         interface{}
 	onClosedCallback func(bool)
 	filter           storage.FileFilter
@@ -49,24 +49,11 @@ type FolderDialog struct {
 var _ dialog.Dialog = (*FolderDialog)(nil)
 
 func (f *folderDialog) makeUI() fyne.CanvasObject {
-	if f.file.save {
-		saveName := widget.NewEntry()
-		saveName.OnChanged = func(s string) {
-			if s == "" {
-				f.open.Disable()
-			} else {
-				f.open.Enable()
-			}
-		}
-		f.fileName = saveName
-	} else {
-		f.fileName = widget.NewLabel("")
-	}
+
+	f.fileName = widget.NewLabel("")
 
 	label := "Open"
-	if f.file.save {
-		label = "Save"
-	}
+
 	f.open = widget.NewButton(label, func() {
 		if f.file.callback == nil {
 			f.win.Hide()
@@ -76,30 +63,13 @@ func (f *folderDialog) makeUI() fyne.CanvasObject {
 			return
 		}
 
-		if f.file.save {
+		if f.selected != nil {
 			callback := f.file.callback.(func(string, error))
-			name := f.fileName.(*widget.Entry).Text
-			path := filepath.Join(f.dir, name)
-
-			info, err := os.Stat(path)
-			if os.IsNotExist(err) {
-				f.win.Hide()
-				if f.file.onClosedCallback != nil {
-					f.file.onClosedCallback(true)
-				}
-				callback(path, err)
-				return
-			} else if info.IsDir() {
-				callback(path, err)
-				return
-			}
-		} else if f.selected != nil {
-			callback := f.file.callback.(func(fyne.URIReadCloser, error))
 			f.win.Hide()
 			if f.file.onClosedCallback != nil {
 				f.file.onClosedCallback(true)
 			}
-			callback(storage.OpenFileFromURI(storage.NewURI("file://" + f.selected.path)))
+			callback(f.selected.path, nil)
 		}
 	})
 	f.open.Style = widget.PrimaryButton
@@ -114,11 +84,7 @@ func (f *folderDialog) makeUI() fyne.CanvasObject {
 			f.file.onClosedCallback(false)
 		}
 		if f.file.callback != nil {
-			if f.file.save {
-				f.file.callback.(func(string, error))("", nil)
-			} else {
-				f.file.callback.(func(string, error))("", nil)
-			}
+			f.file.callback.(func(string, error))("", nil)
 		}
 	})
 	buttons := widget.NewHBox(f.dismiss, f.open)
@@ -174,7 +140,7 @@ func (f *folderDialog) refreshDir(dir string) {
 	parent := filepath.Dir(dir)
 	if parent != dir {
 		fi := &folderDialogItem{picker: f, icon: canvas.NewImageFromResource(theme.FolderOpenIcon()),
-			name: "(Parent)", path: filepath.Dir(dir), dir: true}
+			name: "(Parent)", path: filepath.Dir(dir)}
 		fi.ExtendBaseWidget(fi)
 		icons = append(icons, fi)
 	}
@@ -183,11 +149,8 @@ func (f *folderDialog) refreshDir(dir string) {
 			continue
 		}
 		itemPath := filepath.Join(dir, file.Name())
-		if file.IsDir() {
-			icons = append(icons, f.newFileItem(itemPath, true))
-		} else if f.file.filter == nil || f.file.filter.Matches(storage.NewURI("file://"+itemPath)) {
-			icons = append(icons, f.newFileItem(itemPath, false))
-		}
+		icons = append(icons, f.newFolderItem(itemPath))
+
 	}
 
 	f.files.Objects = icons
@@ -286,14 +249,8 @@ func showFile(file *FolderDialog) *folderDialog {
 
 // Show shows the file dialog.
 func (f *FolderDialog) Show() {
-	if f.save {
-		if fileSaveOSOverride(f) {
-			return
-		}
-	} else {
-		if fileOpenOSOverride(f) {
-			return
-		}
+	if fileOpenOSOverride(f) {
+		return
 	}
 	if f.dialog != nil {
 		f.dialog.win.Show()

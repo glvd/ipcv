@@ -1,13 +1,11 @@
 package dialog
 
 import (
-	"fyne.io/fyne/dialog"
 	"image/color"
 	"path/filepath"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
-	"fyne.io/fyne/storage"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
@@ -26,7 +24,6 @@ type folderDialogItem struct {
 	icon fyne.CanvasObject
 	name string
 	path string
-	dir  bool
 }
 
 func (i *folderDialogItem) Tapped(_ *fyne.PointEvent) {
@@ -54,24 +51,18 @@ func fileName(path string) (name string) {
 }
 
 func (i *folderDialogItem) isDirectory() bool {
-	return i.dir
+	return true
 }
 
-func (f *folderDialog) newFileItem(path string, dir bool) *folderDialogItem {
+func (f *folderDialog) newFolderItem(path string) *folderDialogItem {
 	var icon fyne.CanvasObject
-	if dir {
-		icon = canvas.NewImageFromResource(theme.FolderIcon())
-	} else {
-		icon = dialog.NewFileIcon(storage.NewURI("file://" + path))
-	}
-	name := fileName(path)
-
+	icon = canvas.NewImageFromResource(theme.FolderIcon())
+	name := filepath.Base(path)
 	ret := &folderDialogItem{
 		picker: f,
 		icon:   icon,
 		name:   name,
 		path:   path,
-		dir:    dir,
 	}
 	ret.ExtendBaseWidget(ret)
 	return ret
