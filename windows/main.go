@@ -31,7 +31,7 @@ func New(config config.Config) *MainFrame {
 
 	tabs := widget.NewTabContainer(
 		&widget.TabItem{Text: language.SettingName, Icon: setting.SettingIcon(), Content: setting.LoadSettingScreen(win)},
-		&widget.TabItem{Text: language.ConvertName, Icon: setting.SettingIcon(), Content: convert.LoadConvertScreen(win)},
+		&widget.TabItem{Text: language.ConvertName, Icon: convert.ConvertIcon(), Content: convert.LoadConvertScreen(win)},
 	)
 	tabs.SetTabLocation(widget.TabLocationLeading)
 	win.SetIcon(resourceShipPng)

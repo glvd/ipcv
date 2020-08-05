@@ -35,7 +35,7 @@ func (s *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 	//------------------------------System------------------------------//
 	//scale := s.makeScaleSetting(s.config.System.Setting.Scale)
 	//themes := s.makeThemeSetting(s.config.System.Setting.ThemeName)
-	system := widget.NewGroup(s.language.ConvertName)
+	system := widget.NewGroup(s.language.Name)
 
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Run", Style: widget.PrimaryButton, OnTapped: func() {
