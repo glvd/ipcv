@@ -18,7 +18,11 @@ type MainFrame struct {
 
 func New(config config.Config) *MainFrame {
 	language := i18n.Load(config.System.Language)
-	win := app.New().NewWindow(language.Title)
+	err := i18n.SaveTemplate(language)
+	if err != nil {
+		return nil
+	}
+	win := app.NewWithID(language.Title).NewWindow(language.Title)
 	s := settings.NewSettings(language.Settings)
 	appearance := s.LoadAppearanceScreen(win)
 	tabs := widget.NewTabContainer(

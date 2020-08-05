@@ -38,9 +38,11 @@ func (s *Settings) AppearanceIcon() fyne.Resource {
 
 // LoadAppearanceScreen creates a new settings screen to handle appearance configuration
 func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
+	//------------------------------System------------------------------//
 	scale := s.makeScaleSetting(s.config.System.Setting.Scale)
 	themes := s.makeThemeSetting(s.config.System.Setting.ThemeName)
 	system := widget.NewGroup(s.language.SystemName, scale, themes)
+
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
 			_, err := config.Update(func(config *config.Config) {

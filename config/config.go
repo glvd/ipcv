@@ -53,7 +53,7 @@ func defaultConfig() *Config {
 				ThemeName: "light",
 				Scale:     1,
 			},
-			Language:             "EN",
+			Language:             "en",
 			FFMPEG:               filepath.Clean("bin"),
 			HardwareAcceleration: CPUAcceleration,
 		},

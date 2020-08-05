@@ -11,6 +11,7 @@ type System struct {
 	ThemeSelectDark  string
 	ThemeSelectLight string
 	ScaleName        string
+	Language         string
 }
 
 type Settings struct {
@@ -29,11 +30,18 @@ func LoadSupportted() []string {
 		return []string{}
 	}
 	names, err := lang.Readdirnames(-1)
+
 	if err != nil {
 		return []string{}
 	}
-
-	return names
+	ret := []string{}
+	for _, name := range names {
+		if filepath.Ext(name) != ".toml" {
+			continue
+		}
+		ret = append(ret, name)
+	}
+	return ret
 }
 
 func Load(name string) *Language {
@@ -45,8 +53,16 @@ func Load(name string) *Language {
 	return &l
 }
 
-func defaultLanguage() *Language {
+func SaveTemplate(l *Language) error {
+	tmp, err := os.Create(filepath.Join("i18n", "en.toml"))
+	if err != nil {
+		return err
+	}
+	encoder := toml.NewEncoder(tmp)
+	return encoder.Encode(l)
+}
 
+func defaultLanguage() *Language {
 	return &Language{
 		Title: title,
 		Settings: Settings{
