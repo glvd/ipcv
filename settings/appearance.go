@@ -35,17 +35,9 @@ func (s *Settings) AppearanceIcon() fyne.Resource {
 
 // LoadAppearanceScreen creates a new settings screen to handle appearance configuration
 func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
-	//s.preview = canvas.NewImageFromResource(themeDarkPreview)
-	//s.preview.FillMode = canvas.ImageFillContain
-
-	def := s.config.System.Setting.ThemeName
-
 	scale := s.makeScaleSetting(s.config.System.Setting.Scale)
-	themes := widget.NewSelect([]string{"dark", "light"}, s.chooseTheme)
-	themes.SetSelected(def)
-	system := widget.NewGroup("System", scale)
-	system.Append(scale)
-	system.Append(themes)
+	themes := s.makeThemeSelect(s.config.System.Setting.ThemeName)
+	system := widget.NewGroup("System", scale, themes)
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
 			_, err := config.Update(func(config *config.Config) {
@@ -67,14 +59,6 @@ func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
 
 func (s *Settings) chooseTheme(name string) {
 	s.config.System.Setting.ThemeName = name
-
-	//switch name {
-	//case "light":
-	//	s.preview.Resource = themeLightPreview
-	//default:
-	//	s.preview.Resource = themeDarkPreview
-	//}
-	//canvas.Refresh(s.preview)
 }
 
 func (s *Settings) load() {

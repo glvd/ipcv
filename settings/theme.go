@@ -14,7 +14,7 @@ func (s *Settings) makeThemeSetting(themeName string) fyne.CanvasObject {
 func (s *Settings) makeThemeSelect(name string) *widget.Select {
 	themeNames := []string{"light", "dark"}
 	slt := widget.NewSelect(themeNames, func(v string) {
-		s.chooseScale(v)
+		s.chooseTheme(v)
 	})
 	slt.SetSelected(name)
 	return slt
