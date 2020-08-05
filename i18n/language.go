@@ -6,10 +6,21 @@ import (
 	"path/filepath"
 )
 
-const title = "InterPlanetaryVideoConversion"
+type System struct {
+	ThemeName        string
+	ThemeSelectDark  string
+	ThemeSelectLight string
+	ScaleName        string
+}
+
+type Settings struct {
+	SystemName string
+	System     System
+}
 
 type Language struct {
-	Title string
+	Title    string
+	Settings Settings
 }
 
 func LoadSupportted() []string {
@@ -35,5 +46,17 @@ func Load(name string) *Language {
 }
 
 func defaultLanguage() *Language {
-	return &Language{Title: title}
+
+	return &Language{
+		Title: title,
+		Settings: Settings{
+			SystemName: systemName,
+			System: System{
+				ThemeName:        themeName,
+				ThemeSelectDark:  themeSelectDark,
+				ThemeSelectLight: themeSelectLight,
+				ScaleName:        scaleName,
+			},
+		},
+	}
 }

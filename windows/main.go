@@ -19,7 +19,7 @@ type MainFrame struct {
 func New(config config.Config) *MainFrame {
 	language := i18n.Load(config.System.Language)
 	win := app.New().NewWindow(language.Title)
-	s := settings.NewSettings()
+	s := settings.NewSettings(language.Settings)
 	appearance := s.LoadAppearanceScreen(win)
 	tabs := widget.NewTabContainer(
 		&widget.TabItem{Text: "Appearance", Icon: s.AppearanceIcon(), Content: appearance},

@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Settings) makeThemeSetting(themeName string) fyne.CanvasObject {
-	themeLabel := widget.NewLabel("Theme")
+	themeLabel := widget.NewLabel(s.language.System.ThemeName)
 	themeSelect := s.makeThemeSelect(themeName)
 	return fyne.NewContainerWithLayout(layout.NewGridLayout(2), themeLabel, themeSelect)
 }

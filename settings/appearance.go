@@ -3,6 +3,7 @@ package settings
 import (
 	"encoding/json"
 	"github.com/glvd/ipcv/config"
+	"github.com/glvd/ipcv/i18n"
 	"os"
 	"path/filepath"
 
@@ -15,13 +16,15 @@ import (
 // Settings gives access to user interfaces to control Fyne settings
 type Settings struct {
 	//fyneSettings app.SettingsSchema
-	config config.Config
+	config   config.Config
+	language i18n.Settings
 }
 
 // NewSettings returns a new settings instance with the current configuration loaded
-func NewSettings() *Settings {
+func NewSettings(language i18n.Settings) *Settings {
 	s := &Settings{
-		config: config.Mirror(),
+		config:   config.Mirror(),
+		language: language,
 	}
 	//save config to global
 	s.save()
@@ -36,8 +39,8 @@ func (s *Settings) AppearanceIcon() fyne.Resource {
 // LoadAppearanceScreen creates a new settings screen to handle appearance configuration
 func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
 	scale := s.makeScaleSetting(s.config.System.Setting.Scale)
-	themes := s.makeThemeSelect(s.config.System.Setting.ThemeName)
-	system := widget.NewGroup("System", scale, themes)
+	themes := s.makeThemeSetting(s.config.System.Setting.ThemeName)
+	system := widget.NewGroup(s.language.SystemName, scale, themes)
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
 			_, err := config.Update(func(config *config.Config) {
@@ -58,7 +61,12 @@ func (s *Settings) LoadAppearanceScreen(w fyne.Window) fyne.CanvasObject {
 }
 
 func (s *Settings) chooseTheme(name string) {
-	s.config.System.Setting.ThemeName = name
+	switch name {
+	case s.language.System.ThemeSelectDark:
+		s.config.System.Setting.ThemeName = "dark"
+	default:
+		s.config.System.Setting.ThemeName = "light"
+	}
 }
 
 func (s *Settings) load() {
