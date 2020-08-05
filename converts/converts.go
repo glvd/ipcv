@@ -2,12 +2,11 @@ package converts
 
 import (
 	"fyne.io/fyne"
-	"github.com/glvd/ipcv/dialog"
-
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 	"github.com/glvd/ipcv/config"
+	"github.com/glvd/ipcv/dialog"
 	"github.com/glvd/ipcv/i18n"
 )
 
@@ -61,11 +60,10 @@ func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
 	label := widget.NewLabel(c.lang.Input.Label)
 	text := widget.NewEntry()
 	button := widget.NewButton(c.lang.Input.Button, func() {
-
 		dialog.ShowFloderOpen(func(s string, err error) {
 			text.SetText(s)
 		}, w)
-
 	})
+
 	return fyne.NewContainerWithLayout(layout.NewGridLayout(5), label, text, button)
 }
