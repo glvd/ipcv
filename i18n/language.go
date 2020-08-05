@@ -59,7 +59,7 @@ func Load(name string) *Language {
 }
 
 func SaveTemplate(l *Language) error {
-	tmp, err := os.Create(filepath.Join("i18n", "en.toml"))
+	tmp, err := os.Create(filepath.Join("i18n", "default.toml"))
 	if err != nil {
 		return err
 	}
