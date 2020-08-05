@@ -53,7 +53,6 @@ func (f *folderDialog) makeUI() fyne.CanvasObject {
 	f.fileName = widget.NewLabel("")
 
 	label := "Open"
-
 	f.open = widget.NewButton(label, func() {
 		if f.file.callback == nil {
 			f.win.Hide()
@@ -197,7 +196,6 @@ func (f *folderDialog) setSelected(file *folderDialogItem) {
 	}
 	if file != nil && file.isDirectory() {
 		f.setDirectory(file.path)
-		return
 	}
 	f.selected = file
 

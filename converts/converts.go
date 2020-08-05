@@ -66,7 +66,7 @@ func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
 		//
 		//}, w)
 		dialog.ShowFloderOpen(func(s string, err error) {
-
+			text.SetText(s)
 		}, w)
 
 		//dialog.ShowFloderOpen(func(closer fyne.URIReadCloser, err error) {
