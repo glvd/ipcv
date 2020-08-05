@@ -5,6 +5,7 @@ import (
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/widget"
 	"github.com/glvd/ipcv/config"
+	"github.com/glvd/ipcv/converts"
 	"github.com/glvd/ipcv/i18n"
 	"github.com/glvd/ipcv/settings"
 )
@@ -25,11 +26,12 @@ func New(config config.Config) *MainFrame {
 		return nil
 	}
 	win := app.New().NewWindow(language.Title)
-	s := settings.NewSettings(language.Settings)
-	appearance := s.LoadAppearanceScreen(win)
+	setting := settings.NewSettings(language.Settings)
+	convert := converts.NewConverts(language.Converts)
+
 	tabs := widget.NewTabContainer(
-		&widget.TabItem{Text: "Appearance", Icon: s.AppearanceIcon(), Content: appearance},
-		//&widget.TabItem{Text: "Language", Icon: s.LanguageIcon(), Content: language},
+		&widget.TabItem{Text: language.SettingName, Icon: setting.SettingIcon(), Content: setting.LoadSettingScreen(win)},
+		&widget.TabItem{Text: language.ConvertName, Icon: setting.SettingIcon(), Content: convert.LoadConvertScreen(win)},
 	)
 	tabs.SetTabLocation(widget.TabLocationLeading)
 	win.SetIcon(resourceShipPng)
@@ -40,7 +42,7 @@ func New(config config.Config) *MainFrame {
 		language: language,
 	}
 	//app := app.New()
-	//s := settings.NewSettings()
+	//setting := settings.NewSettings()
 	//w := app.NewWindow(Title)
 }
 

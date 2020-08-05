@@ -24,9 +24,16 @@ type Settings struct {
 	System     System
 }
 
+type Converts struct {
+	Name string
+}
+
 type Language struct {
-	Title    string
-	Settings Settings
+	Title       string
+	SettingName string
+	Settings    Settings
+	ConvertName string
+	Converts    Converts
 }
 
 func LoadSupportted() []string {
@@ -70,7 +77,8 @@ func SaveTemplate(l *Language) error {
 func defaultLanguage() *Language {
 
 	return &Language{
-		Title: title,
+		Title:       title,
+		SettingName: settingName,
 		Settings: Settings{
 			SystemName: systemName,
 			System: System{
@@ -86,5 +94,7 @@ func defaultLanguage() *Language {
 				Language:         language,
 			},
 		},
+		ConvertName: convertName,
+		Converts:    Converts{},
 	}
 }
