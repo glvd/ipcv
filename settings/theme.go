@@ -12,10 +12,20 @@ func (s *Settings) makeThemeSetting(themeName string) fyne.CanvasObject {
 	return fyne.NewContainerWithLayout(layout.NewGridLayout(2), themeLabel, themeSelect)
 }
 func (s *Settings) makeThemeSelect(name string) *widget.Select {
-	themeNames := []string{"light", "dark"}
+	themeNames := []string{s.language.System.ThemeSelectDark, s.language.System.ThemeSelectLight}
 	slt := widget.NewSelect(themeNames, func(v string) {
 		s.chooseTheme(v)
 	})
+	name = s.getSelectIndex(name)
 	slt.SetSelected(name)
 	return slt
+}
+
+func (s *Settings) getSelectIndex(name string) string {
+	switch name {
+	case "dark":
+		return s.language.System.ThemeSelectDark
+	default:
+		return s.language.System.ThemeSelectLight
+	}
 }
