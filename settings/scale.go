@@ -2,17 +2,15 @@ package settings
 
 import (
 	"fyne.io/fyne"
-	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/layout"
-	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
 
 type scaleItems struct {
-	scale   float32
-	name    string
-	preview *canvas.Text
-	button  *widget.Button
+	scale float32
+	name  string
+	//preview *canvas.Text
+	button *widget.Button
 }
 
 var scales = []*scaleItems{
@@ -23,9 +21,9 @@ var scales = []*scaleItems{
 	{scale: 1.8, name: "Huge"}}
 
 func (s *Settings) appliedScale(value float32) {
-	for _, scale := range scales {
-		scale.preview.TextSize = int(float32(theme.TextSize()) * scale.scale / value)
-	}
+	//for _, scale := range scales {
+	//scale.preview.TextSize = int(float32(theme.TextSize()) * scale.scale / value)
+	//}
 }
 
 func (s *Settings) chooseScale(value string) {
@@ -54,28 +52,7 @@ func (s *Settings) makeScaleSelect(sc float32) *widget.Select {
 func (s *Settings) makeScaleSetting(scale float32) fyne.CanvasObject {
 	scaleLabel := widget.NewLabel("Scale")
 	scaleSelect := s.makeScaleSelect(scale)
-	scaleBox := fyne.NewContainerWithLayout(layout.NewGridLayout(2), scaleLabel, scaleSelect)
-	return scaleBox
-}
-
-func (s *Settings) makeScalePreviews(value float32) []fyne.CanvasObject {
-	var previews = make([]fyne.CanvasObject, len(scales))
-	for i, scale := range scales {
-		text := canvas.NewText("A", theme.TextColor())
-		text.Alignment = fyne.TextAlignCenter
-		text.TextSize = int(float32(theme.TextSize()) * scale.scale / value)
-
-		scale.preview = text
-		previews[i] = text
-	}
-
-	return previews
-}
-
-func (s *Settings) refreshScalePreviews() {
-	for _, scale := range scales {
-		scale.preview.Color = theme.TextColor()
-	}
+	return fyne.NewContainerWithLayout(layout.NewGridLayout(2), scaleLabel, scaleSelect)
 }
 
 // refreshMonitor is a simple widget that updates canvas components when the UI is asked to refresh.
@@ -86,7 +63,7 @@ type refreshMonitor struct {
 }
 
 func (r *refreshMonitor) Refresh() {
-	r.settings.refreshScalePreviews()
+	//r.settings.refreshScalePreviews()
 	r.Label.Refresh()
 }
 
