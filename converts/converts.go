@@ -60,24 +60,12 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
 	label := widget.NewLabel(c.lang.Input.Label)
 	text := widget.NewEntry()
-	//&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
 	button := widget.NewButton(c.lang.Input.Button, func() {
-		//dialog.NewConfirm("testTitle", "testMessage", func(b bool) {
-		//
-		//}, w)
+
 		dialog.ShowFloderOpen(func(s string, err error) {
 			text.SetText(s)
 		}, w)
 
-		//dialog.ShowFloderOpen(func(closer fyne.URIReadCloser, err error) {
-		//	if closer == nil {
-		//		return
-		//	}
-		//	fmt.Println(closer.Name())
-		//}, w)
-		//dialog.NewFileOpen(func(closer fyne.URIReadCloser, err error) {
-
-		//}, nil)
 	})
 	return fyne.NewContainerWithLayout(layout.NewGridLayout(5), label, text, button)
 }
