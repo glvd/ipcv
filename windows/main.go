@@ -24,7 +24,7 @@ func New(config config.Config) *MainFrame {
 	if err != nil {
 		return nil
 	}
-	win := app.NewWithID(language.Title).NewWindow(language.Title)
+	win := app.New().NewWindow(language.Title)
 	s := settings.NewSettings(language.Settings)
 	appearance := s.LoadAppearanceScreen(win)
 	tabs := widget.NewTabContainer(
