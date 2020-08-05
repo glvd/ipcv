@@ -33,6 +33,7 @@ func New(config config.Config) *MainFrame {
 		&widget.TabItem{Text: language.SettingName, Icon: setting.SettingIcon(), Content: setting.LoadSettingScreen(win)},
 		&widget.TabItem{Text: language.ConvertName, Icon: convert.ConvertIcon(), Content: convert.LoadConvertScreen(win)},
 	)
+
 	tabs.SetTabLocation(widget.TabLocationLeading)
 	win.SetIcon(resourceShipPng)
 	win.SetContent(tabs)

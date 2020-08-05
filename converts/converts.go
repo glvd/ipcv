@@ -2,6 +2,8 @@ package converts
 
 import (
 	"fyne.io/fyne"
+	"github.com/glvd/ipcv/dialog"
+
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
@@ -33,7 +35,7 @@ func (c *Converts) ConvertIcon() fyne.Resource {
 // LoadConvertScreen creates a new convert screen to handle appearance configuration
 func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 	//------------------------------SettingSystem------------------------------//
-	input := c.makeInputConvert()
+	input := c.makeInputConvert(w)
 	//themes := c.makeThemeSetting(c.config.SettingSystem.Setting.ThemeLabel)
 	system := widget.NewGroup(c.lang.Name, input)
 
@@ -55,13 +57,27 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 		system, bottom)
 }
 
-func (c *Converts) makeInputConvert() fyne.CanvasObject {
+func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
 	label := widget.NewLabel(c.lang.Input.Label)
 	text := widget.NewEntry()
-
 	//&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
 	button := widget.NewButton(c.lang.Input.Button, func() {
+		//dialog.NewConfirm("testTitle", "testMessage", func(b bool) {
+		//
+		//}, w)
+		dialog.ShowFloderOpen(func(s string, err error) {
 
+		}, w)
+
+		//dialog.ShowFloderOpen(func(closer fyne.URIReadCloser, err error) {
+		//	if closer == nil {
+		//		return
+		//	}
+		//	fmt.Println(closer.Name())
+		//}, w)
+		//dialog.NewFileOpen(func(closer fyne.URIReadCloser, err error) {
+
+		//}, nil)
 	})
-	return fyne.NewContainerWithLayout(layout.NewGridLayout(5), label, text, text, text, button)
+	return fyne.NewContainerWithLayout(layout.NewGridLayout(5), label, text, button)
 }
