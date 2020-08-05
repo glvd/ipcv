@@ -16,8 +16,9 @@ import (
 // Settings gives access to user interfaces to control Fyne settings
 type Settings struct {
 	//fyneSettings app.SettingsSchema
-	config   config.Config
-	language i18n.Settings
+	config     config.Config
+	language   i18n.Settings
+	scaleItems []*scaleItems
 }
 
 // NewSettings returns a new settings instance with the current configuration loaded
@@ -25,6 +26,13 @@ func NewSettings(language i18n.Settings) *Settings {
 	s := &Settings{
 		config:   config.Mirror(),
 		language: language,
+		scaleItems: []*scaleItems{
+			{scale: 0.5, name: language.System.ScaleItemTiny},
+			{scale: 0.8, name: language.System.ScaleItemSmall},
+			{scale: 1, name: language.System.ScaleItemNormal},
+			{scale: 1.3, name: language.System.ScaleItemLarge},
+			{scale: 1.8, name: language.System.ScaleItemHuge},
+		},
 	}
 	//save config to global
 	s.save()

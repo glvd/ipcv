@@ -10,15 +10,8 @@ type scaleItems struct {
 	scale float32
 	name  string
 	//preview *canvas.Text
-	button *widget.Button
+	//button *widget.Button
 }
-
-var scales = []*scaleItems{
-	{scale: 0.5, name: "Tiny"},
-	{scale: 0.8, name: "Small"},
-	{scale: 1, name: "Normal"},
-	{scale: 1.3, name: "Large"},
-	{scale: 1.8, name: "Huge"}}
 
 func (s *Settings) appliedScale(value float32) {
 	//for _, scale := range scales {
@@ -27,7 +20,7 @@ func (s *Settings) appliedScale(value float32) {
 }
 
 func (s *Settings) chooseScale(value string) {
-	for _, scale := range scales {
+	for _, scale := range s.scaleItems {
 		if scale.name == value {
 			s.config.System.Setting.Scale = scale.scale
 		}
@@ -36,7 +29,7 @@ func (s *Settings) chooseScale(value string) {
 func (s *Settings) makeScaleSelect(sc float32) *widget.Select {
 	var scaleNames []string
 	selected := ""
-	for _, scale := range scales {
+	for _, scale := range s.scaleItems {
 		scaleNames = append(scaleNames, scale.name)
 		if sc == scale.scale {
 			selected = scale.name

@@ -11,6 +11,11 @@ type System struct {
 	ThemeSelectDark  string
 	ThemeSelectLight string
 	ScaleName        string
+	ScaleItemTiny    string
+	ScaleItemSmall   string
+	ScaleItemNormal  string
+	ScaleItemLarge   string
+	ScaleItemHuge    string
 	Language         string
 }
 
@@ -63,6 +68,7 @@ func SaveTemplate(l *Language) error {
 }
 
 func defaultLanguage() *Language {
+
 	return &Language{
 		Title: title,
 		Settings: Settings{
@@ -72,6 +78,12 @@ func defaultLanguage() *Language {
 				ThemeSelectDark:  themeSelectDark,
 				ThemeSelectLight: themeSelectLight,
 				ScaleName:        scaleName,
+				ScaleItemTiny:    "",
+				ScaleItemSmall:   "",
+				ScaleItemNormal:  "",
+				ScaleItemLarge:   "",
+				ScaleItemHuge:    "",
+				Language:         language,
 			},
 		},
 	}
