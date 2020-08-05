@@ -18,9 +18,15 @@ const (
 
 type HardwareAcceleration string
 
+type Language struct {
+	Name     string
+	FontPath string
+	Font     string
+}
+
 type System struct {
 	Setting              app.SettingsSchema
-	Language             string
+	Language             Language
 	FFMPEG               string
 	HardwareAcceleration HardwareAcceleration
 }
@@ -53,7 +59,9 @@ func defaultConfig() *Config {
 				ThemeName: "light",
 				Scale:     1,
 			},
-			Language:             "en",
+			Language: Language{
+				Name: "en",
+			},
 			FFMPEG:               filepath.Clean("bin"),
 			HardwareAcceleration: CPUAcceleration,
 		},
@@ -83,4 +91,12 @@ func Update(f func(config *Config)) (Config, error) {
 		return Mirror(), err
 	}
 	return Mirror(), nil
+}
+
+func SimpleChineseLanguage() Language {
+	return Language{
+		Name:     "中文",
+		FontPath: "C:\\Windows\\Fonts\\simkai.ttf",
+		Font:     "楷体",
+	}
 }

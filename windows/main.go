@@ -17,7 +17,9 @@ type MainFrame struct {
 }
 
 func New(config config.Config) *MainFrame {
-	language := i18n.Load(config.System.Language)
+	setLanguageFontEnv(config.System.Language)
+
+	language := i18n.Load(config.System.Language.Name)
 	err := i18n.SaveTemplate(language)
 	if err != nil {
 		return nil
