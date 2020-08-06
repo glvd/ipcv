@@ -41,7 +41,9 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 	//themes := c.makeThemeSetting(c.config.SettingSystem.Setting.ThemeLabel)
 	inputG := widget.NewGroup(c.lang.Input.Title, input)
 	outputG := widget.NewGroup(c.lang.Output.Title, output)
-	top := widget.NewGroup(c.lang.Title, inputG, outputG)
+
+	converts := widget.NewTabItem(c.lang.Action, widget.NewVBox(inputG, outputG))
+	top := widget.NewGroup(c.lang.Title, widget.NewTabContainer(converts))
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Run", Style: widget.PrimaryButton, OnTapped: func() {
 			//_, err := config.Update(func(config *config.Config) {

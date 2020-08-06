@@ -33,8 +33,10 @@ type ConvertInputOutput struct {
 
 type Converts struct {
 	Title  string
+	Action string
 	Input  ConvertInputOutput
 	Output ConvertInputOutput
+	Option string
 }
 
 type Language struct {
@@ -106,7 +108,9 @@ func defaultLanguage() *Language {
 		},
 		ConvertName: convertName,
 		Converts: Converts{
-			Title: convertName,
+			Title:  convertName,
+			Action: "Action",
+			Option: "Option",
 			Input: ConvertInputOutput{
 				Label:  "Input",
 				Button: "Open",

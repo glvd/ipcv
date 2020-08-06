@@ -49,10 +49,8 @@ func (s *Settings) LoadSettingScreen(w fyne.Window) fyne.CanvasObject {
 	//------------------------------SettingSystem------------------------------//
 	scale := s.makeScaleSetting(s.config.System.Setting.Scale)
 	themes := s.makeThemeSetting(s.config.System.Setting.ThemeName)
-	system := widget.NewGroup(s.lang.System.Title, scale, themes)
-
-	top := widget.NewGroup(s.lang.Title, system)
-
+	system := widget.NewVBox(scale, themes)
+	top := widget.NewGroup(s.lang.Title, widget.NewTabContainer(widget.NewTabItem(s.lang.System.Title, system)))
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Apply", Style: widget.PrimaryButton, OnTapped: func() {
 			_, err := config.Update(func(config *config.Config) {
