@@ -17,11 +17,12 @@ type SettingSystem struct {
 	ScaleItemLarge   string
 	ScaleItemHuge    string
 	LanguageLabel    string
+	Title            string
 }
 
 type Settings struct {
-	SystemTitle string
-	System      SettingSystem
+	Title  string
+	System SettingSystem
 }
 
 type ConvertInputOutput struct {
@@ -31,7 +32,7 @@ type ConvertInputOutput struct {
 }
 
 type Converts struct {
-	Name   string
+	Title  string
 	Input  ConvertInputOutput
 	Output ConvertInputOutput
 }
@@ -88,7 +89,7 @@ func defaultLanguage() *Language {
 		Title:       title,
 		SettingName: settingName,
 		Settings: Settings{
-			SystemTitle: systemName,
+			Title: settingName,
 			System: SettingSystem{
 				ThemeLabel:       themeName,
 				ThemeSelectDark:  themeSelectDark,
@@ -100,11 +101,12 @@ func defaultLanguage() *Language {
 				ScaleItemLarge:   scaleItemLarge,
 				ScaleItemHuge:    scaleItemHuge,
 				LanguageLabel:    language,
+				Title:            "System",
 			},
 		},
 		ConvertName: convertName,
 		Converts: Converts{
-			Name: "Action",
+			Title: convertName,
 			Input: ConvertInputOutput{
 				Label:  "Input",
 				Button: "Open",

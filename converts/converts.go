@@ -39,8 +39,9 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 	input := c.makeInputConvert(w)
 	output := c.makeOutputConvert(w)
 	//themes := c.makeThemeSetting(c.config.SettingSystem.Setting.ThemeLabel)
-	system := widget.NewGroup(c.lang.Input.Title, input, output)
-
+	inputG := widget.NewGroup(c.lang.Input.Title, input)
+	outputG := widget.NewGroup(c.lang.Output.Title, output)
+	top := widget.NewGroup(c.lang.Title, inputG, outputG)
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Run", Style: widget.PrimaryButton, OnTapped: func() {
 			//_, err := config.Update(func(config *config.Config) {
@@ -55,8 +56,8 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 			//}
 		}})
 
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(system, bottom, nil, nil),
-		system, bottom)
+	return fyne.NewContainerWithLayout(layout.NewBorderLayout(top, bottom, nil, nil),
+		top, bottom)
 }
 
 func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
@@ -72,9 +73,8 @@ func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
 			text.SetText(s)
 		}, w)
 	})
-	inputItem := widget.NewFormItem(c.lang.Input.Label, text)
 	box := widget.NewHBox(layout.NewSpacer(), button)
-	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), widget.NewForm(inputItem), box)
+	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, box)
 }
 func (c *Converts) makeOutputConvert(w fyne.Window) fyne.CanvasObject {
 	text := widget.NewEntry()
@@ -88,7 +88,6 @@ func (c *Converts) makeOutputConvert(w fyne.Window) fyne.CanvasObject {
 			text.SetText(s)
 		}, w)
 	})
-	inputItem := widget.NewFormItem(c.lang.Output.Label, text)
 	box := widget.NewHBox(layout.NewSpacer(), button)
-	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), widget.NewForm(inputItem), box)
+	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, box)
 }
