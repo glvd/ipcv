@@ -6,7 +6,6 @@ import (
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 	"github.com/glvd/ipcv/config"
-	"github.com/glvd/ipcv/dialog"
 	"github.com/glvd/ipcv/i18n"
 )
 
@@ -46,50 +45,9 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 	top := widget.NewGroup(c.lang.Title, widget.NewTabContainer(converts))
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Run", Style: widget.PrimaryButton, OnTapped: func() {
-			//_, err := config.Update(func(config *config.Config) {
-			//	*config = c.config
-			//})
-			//if err != nil {
-			//	fyne.LogError("failed on update", err)
-			//}
-			//err = c.save()
-			//if err != nil {
-			//	fyne.LogError("failed on saving", err)
-			//}
+
 		}})
 
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(top, bottom, nil, nil),
 		top, bottom)
-}
-
-func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
-	//label := widget.NewLabel(c.lang.Input.Label)
-	text := widget.NewEntry()
-	text.Disable()
-	button := widget.NewButton(c.lang.Input.Button, func() {
-		dialog.ShowFloderOpen(func(s string, err error) {
-			if len(s) > 60 {
-				c.inputPath = s
-				s = s[0:60] + "..."
-			}
-			text.SetText(s)
-		}, w)
-	})
-	box := widget.NewHBox(layout.NewSpacer(), button)
-	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, box)
-}
-func (c *Converts) makeOutputConvert(w fyne.Window) fyne.CanvasObject {
-	text := widget.NewEntry()
-	text.Disable()
-	button := widget.NewButton(c.lang.Output.Button, func() {
-		dialog.ShowFloderOpen(func(s string, err error) {
-			if len(s) > 60 {
-				c.outputPath = s
-				s = s[0:60] + "..."
-			}
-			text.SetText(s)
-		}, w)
-	})
-	box := widget.NewHBox(layout.NewSpacer(), button)
-	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, box)
 }

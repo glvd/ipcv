@@ -10,13 +10,11 @@ import (
 )
 
 const (
-	CPUAcceleration    HardwareAcceleration = "CPU"
-	AMDAcceleration    HardwareAcceleration = "AMD"
-	NvidiaAcceleration HardwareAcceleration = "Nvidia"
-	MacAcceleration    HardwareAcceleration = "Mac"
+	CPUAcceleration    = "CPU"
+	AMDAcceleration    = "AMD"
+	NvidiaAcceleration = "Nvidia"
+	MacAcceleration    = "Mac"
 )
-
-type HardwareAcceleration string
 
 type Language struct {
 	Name     string
@@ -28,7 +26,7 @@ type System struct {
 	Setting              app.SettingsSchema
 	Language             Language
 	FFMPEG               string
-	HardwareAcceleration HardwareAcceleration
+	HardwareAcceleration string
 }
 
 type Config struct {

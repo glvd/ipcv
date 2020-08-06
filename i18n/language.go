@@ -18,6 +18,7 @@ type SettingSystem struct {
 	ScaleItemHuge    string
 	LanguageLabel    string
 	Title            string
+	Accelerate       string
 }
 
 type Settings struct {
@@ -104,6 +105,7 @@ func defaultLanguage() *Language {
 				ScaleItemHuge:    scaleItemHuge,
 				LanguageLabel:    language,
 				Title:            "System",
+				Accelerate:       "Accelerate",
 			},
 		},
 		ConvertName: convertName,
