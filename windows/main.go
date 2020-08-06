@@ -25,7 +25,8 @@ func New(config config.Config) *MainFrame {
 	if err != nil {
 		return nil
 	}
-	win := app.New().NewWindow(language.Title)
+	newApp := app.New()
+	win := newApp.NewWindow(language.Title)
 	setting := settings.NewSettings(language.Settings)
 	convert := converts.NewConverts(language.Converts)
 

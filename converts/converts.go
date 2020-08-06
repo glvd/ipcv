@@ -13,8 +13,10 @@ import (
 // Settings gives access to user interfaces to control Fyne settings
 type Converts struct {
 	//fyneSettings app.SettingsSchema
-	config config.Config
-	lang   i18n.Converts
+	config     config.Config
+	lang       i18n.Converts
+	inputPath  string
+	outputPath string
 }
 
 // NewConverts returns a new settings instance with the current configuration loaded
@@ -35,8 +37,9 @@ func (c *Converts) ConvertIcon() fyne.Resource {
 func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 	//------------------------------SettingSystem------------------------------//
 	input := c.makeInputConvert(w)
+	output := c.makeOutputConvert(w)
 	//themes := c.makeThemeSetting(c.config.SettingSystem.Setting.ThemeLabel)
-	system := widget.NewGroup(c.lang.Name, input)
+	system := widget.NewGroup(c.lang.Input.Title, input, output)
 
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Run", Style: widget.PrimaryButton, OnTapped: func() {
@@ -57,13 +60,35 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 }
 
 func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
-	label := widget.NewLabel(c.lang.Input.Label)
+	//label := widget.NewLabel(c.lang.Input.Label)
 	text := widget.NewEntry()
+	text.Disable()
 	button := widget.NewButton(c.lang.Input.Button, func() {
 		dialog.ShowFloderOpen(func(s string, err error) {
+			if len(s) > 60 {
+				c.inputPath = s
+				s = s[0:60] + "..."
+			}
 			text.SetText(s)
 		}, w)
 	})
-
-	return fyne.NewContainerWithLayout(layout.NewGridLayout(5), label, text, button)
+	inputItem := widget.NewFormItem(c.lang.Input.Label, text)
+	box := widget.NewHBox(layout.NewSpacer(), button)
+	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), widget.NewForm(inputItem), box)
+}
+func (c *Converts) makeOutputConvert(w fyne.Window) fyne.CanvasObject {
+	text := widget.NewEntry()
+	text.Disable()
+	button := widget.NewButton(c.lang.Output.Button, func() {
+		dialog.ShowFloderOpen(func(s string, err error) {
+			if len(s) > 60 {
+				c.outputPath = s
+				s = s[0:60] + "..."
+			}
+			text.SetText(s)
+		}, w)
+	})
+	inputItem := widget.NewFormItem(c.lang.Output.Label, text)
+	box := widget.NewHBox(layout.NewSpacer(), button)
+	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), widget.NewForm(inputItem), box)
 }

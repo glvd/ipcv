@@ -24,14 +24,16 @@ type Settings struct {
 	System      SettingSystem
 }
 
-type ConvertInput struct {
+type ConvertInputOutput struct {
 	Label  string
 	Button string
+	Title  string
 }
 
 type Converts struct {
-	Name  string
-	Input ConvertInput
+	Name   string
+	Input  ConvertInputOutput
+	Output ConvertInputOutput
 }
 
 type Language struct {
@@ -103,9 +105,15 @@ func defaultLanguage() *Language {
 		ConvertName: convertName,
 		Converts: Converts{
 			Name: "Action",
-			Input: ConvertInput{
+			Input: ConvertInputOutput{
 				Label:  "Input",
 				Button: "Open",
+				Title:  "Input",
+			},
+			Output: ConvertInputOutput{
+				Label:  "Output",
+				Button: "Open",
+				Title:  "Output",
 			},
 		},
 	}
