@@ -38,8 +38,13 @@ type Config struct {
 	Conversion Conversion
 }
 
-var _config = load()
-var configLock = &sync.RWMutex{}
+var _config *Config
+var _configLock *sync.RWMutex
+
+func init() {
+	_configLock = &sync.RWMutex{}
+	_config = load()
+}
 
 func load() *Config {
 	open, err := os.Open(".config")
@@ -76,17 +81,17 @@ func defaultConfig() *Config {
 }
 
 func Mirror() (cfg Config) {
-	configLock.RLock()
+	_configLock.RLock()
 	cfg = *_config
-	configLock.RUnlock()
+	_configLock.RUnlock()
 	return
 }
 
 func Update(f func(config *Config)) (Config, error) {
 	if f != nil {
-		configLock.Lock()
+		_configLock.Lock()
 		f(_config)
-		configLock.Unlock()
+		_configLock.Unlock()
 	}
 	marshal, err := json.Marshal(_config)
 	if err != nil {
