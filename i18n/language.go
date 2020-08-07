@@ -21,9 +21,14 @@ type SettingSystem struct {
 	Accelerate       string
 }
 
+type SettingConversion struct {
+	Title string
+}
+
 type Settings struct {
-	Title  string
-	System SettingSystem
+	Title      string
+	System     SettingSystem
+	Conversion SettingConversion
 }
 
 type ConvertInputOutput struct {
@@ -87,7 +92,6 @@ func SaveTemplate(l *Language) error {
 }
 
 func defaultLanguage() *Language {
-
 	return &Language{
 		Title:       title,
 		SettingName: settingName,
@@ -106,6 +110,9 @@ func defaultLanguage() *Language {
 				LanguageLabel:    language,
 				Title:            "System",
 				Accelerate:       "Accelerate",
+			},
+			Conversion: SettingConversion{
+				Title: "Conversion",
 			},
 		},
 		ConvertName: convertName,

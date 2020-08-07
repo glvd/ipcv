@@ -9,7 +9,7 @@ import (
 
 func (s *Settings) makeConversionTab(w fyne.Window) *widget.TabItem {
 	acc := s.makeAccSetting(s.config.Conversion.HardwareAcceleration)
-	return widget.NewTabItem("HardwareAcceleration", acc)
+	return widget.NewTabItem(s.lang.Conversion.Title, widget.NewVBox(acc))
 }
 func (s *Settings) makeAccSetting(name string) fyne.CanvasObject {
 	label := widget.NewLabel(s.lang.System.Accelerate)
