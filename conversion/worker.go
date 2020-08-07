@@ -53,3 +53,7 @@ func (w *work) Run() {
 func (w *work) Stop() {
 	w.SetStatus("stop")
 }
+
+func (w *work) HookInfo(f func(s string)) {
+
+}

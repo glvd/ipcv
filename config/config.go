@@ -23,17 +23,19 @@ type Language struct {
 }
 
 type Conversion struct {
-}
-
-type System struct {
-	Setting              app.SettingsSchema
-	Language             Language
 	FFMPEG               string
+	FFProbe              string
 	HardwareAcceleration string
 }
 
+type System struct {
+	Setting  app.SettingsSchema
+	Language Language
+}
+
 type Config struct {
-	System System
+	System     System
+	Conversion Conversion
 }
 
 var _config = load()
@@ -63,6 +65,9 @@ func defaultConfig() *Config {
 			Language: Language{
 				Name: "en",
 			},
+		},
+		Conversion: Conversion{
+			FFProbe:              filepath.Clean("bin"),
 			FFMPEG:               filepath.Clean("bin"),
 			HardwareAcceleration: CPUAcceleration,
 		},
