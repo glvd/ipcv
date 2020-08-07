@@ -7,9 +7,9 @@ import (
 	"github.com/glvd/ipcv/config"
 )
 
-func (s *Settings) makeConversionTab(w fyne.Window) *widget.TabContainer {
+func (s *Settings) makeConversionTab(w fyne.Window) *widget.TabItem {
 	acc := s.makeAccSetting(s.config.Conversion.HardwareAcceleration)
-	return widget.NewTabContainer(widget.NewTabItem("HardwareAcceleration", acc))
+	return widget.NewTabItem("HardwareAcceleration", acc)
 }
 func (s *Settings) makeAccSetting(name string) fyne.CanvasObject {
 	label := widget.NewLabel(s.lang.System.Accelerate)
