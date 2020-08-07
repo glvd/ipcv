@@ -56,6 +56,7 @@ func load() *Config {
 }
 
 func defaultConfig() *Config {
+	binaryPath := filepath.Clean("bin")
 	return &Config{
 		System: System{
 			Setting: app.SettingsSchema{
@@ -67,8 +68,8 @@ func defaultConfig() *Config {
 			},
 		},
 		Conversion: Conversion{
-			FFProbe:              filepath.Clean("bin"),
-			FFMPEG:               filepath.Clean("bin"),
+			FFProbe:              filepath.Join(binaryPath, binaryExt("ffprobe")),
+			FFMPEG:               filepath.Join(binaryPath, binaryExt("ffmpeg")),
 			HardwareAcceleration: CPUAcceleration,
 		},
 	}
