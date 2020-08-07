@@ -7,6 +7,10 @@ import (
 	"github.com/glvd/ipcv/config"
 )
 
+func (s *Settings) makeConversionTab(w fyne.Window) *widget.TabContainer {
+	acc := s.makeAccSetting(s.config.Conversion.HardwareAcceleration)
+	return widget.NewTabContainer(widget.NewTabItem("HardwareAcceleration", acc))
+}
 func (s *Settings) makeAccSetting(name string) fyne.CanvasObject {
 	label := widget.NewLabel(s.lang.System.Accelerate)
 	names := []string{config.CPUAcceleration, config.AMDAcceleration, config.NvidiaAcceleration, config.MacAcceleration}
@@ -17,5 +21,5 @@ func (s *Settings) makeAccSetting(name string) fyne.CanvasObject {
 	return fyne.NewContainerWithLayout(layout.NewGridLayout(2), label, slt)
 }
 func (s *Settings) chooseAcc(v string) {
-	s.config.System.HardwareAcceleration = v
+	s.config.Conversion.HardwareAcceleration = v
 }
