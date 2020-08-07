@@ -1,11 +1,13 @@
 package converts
 
 import (
+	"fmt"
 	"fyne.io/fyne"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 	"github.com/glvd/ipcv/config"
+	"github.com/glvd/ipcv/conversion"
 	"github.com/glvd/ipcv/i18n"
 )
 
@@ -37,7 +39,15 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 	top := widget.NewGroup(c.lang.Title, c.makeConvertTab(w))
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Run", Style: widget.PrimaryButton, OnTapped: func() {
-
+			work := conversion.RandomWork(c.config.Conversion)
+			fmt.Println(work.ID())
+			conversion.AddWorker(work)
+			err := conversion.Start()
+			if err != nil {
+				return
+			}
+			tmp := conversion.GetWorker(work.ID())
+			fmt.Println(tmp.ID())
 		}})
 
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(top, bottom, nil, nil),
