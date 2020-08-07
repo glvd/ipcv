@@ -22,6 +22,9 @@ type Language struct {
 	Font     string
 }
 
+type Conversion struct {
+}
+
 type System struct {
 	Setting              app.SettingsSchema
 	Language             Language

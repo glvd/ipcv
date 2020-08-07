@@ -34,15 +34,7 @@ func (c *Converts) ConvertIcon() fyne.Resource {
 
 // LoadConvertScreen creates a new convert screen to handle appearance configuration
 func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
-	//------------------------------SettingSystem------------------------------//
-	input := c.makeInputConvert(w)
-	output := c.makeOutputConvert(w)
-	//themes := c.makeThemeSetting(c.config.SettingSystem.Setting.ThemeLabel)
-	inputG := widget.NewGroup(c.lang.Input.Title, input)
-	outputG := widget.NewGroup(c.lang.Output.Title, output)
-
-	converts := widget.NewTabItem(c.lang.Action, widget.NewVBox(inputG, outputG))
-	top := widget.NewGroup(c.lang.Title, widget.NewTabContainer(converts))
+	top := widget.NewGroup(c.lang.Title, c.makeConvertTab(w))
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Run", Style: widget.PrimaryButton, OnTapped: func() {
 
@@ -50,4 +42,17 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 
 	return fyne.NewContainerWithLayout(layout.NewBorderLayout(top, bottom, nil, nil),
 		top, bottom)
+}
+
+func (c *Converts) makeConvertTab(w fyne.Window) *widget.TabContainer {
+	//------------------------------SettingSystem------------------------------//
+	input := c.makeInputConvert(w)
+	output := c.makeOutputConvert(w)
+	//themes := c.makeThemeSetting(c.config.SettingSystem.Setting.ThemeLabel)
+	inputG := widget.NewGroup(c.lang.Input.Title, input)
+	outputG := widget.NewGroup(c.lang.Output.Title, output)
+	op := c.makeOptionConvert(w)
+	action := widget.NewTabItem(c.lang.Action, widget.NewVBox(inputG, outputG))
+	option := widget.NewTabItem(c.lang.Option, widget.NewVBox(op))
+	return widget.NewTabContainer(action, option)
 }

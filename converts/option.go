@@ -4,22 +4,21 @@ import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
-	"github.com/glvd/ipcv/dialog"
 )
 
 func (c *Converts) makeOptionConvert(w fyne.Window) fyne.CanvasObject {
+	check0 := widget.NewCheck("M3U8", func(b bool) {
 
-	text := widget.NewEntry()
-	text.Disable()
+	})
+	check1 := widget.NewCheck("test", func(b bool) {
+
+	})
+	check2 := widget.NewCheck("test", func(b bool) {
+
+	})
 	button := widget.NewButton(c.lang.Output.Button, func() {
-		dialog.ShowFloderOpen(func(s string, err error) {
-			if len(s) > 60 {
-				c.outputPath = s
-				s = s[0:60] + "..."
-			}
-			text.SetText(s)
-		}, w)
+
 	})
 	box := widget.NewHBox(layout.NewSpacer(), button)
-	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, box)
+	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), widget.NewHBox(check0, check1, check2), box)
 }
