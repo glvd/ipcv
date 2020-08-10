@@ -13,10 +13,9 @@ import (
 
 // Settings gives access to user interfaces to control Fyne settings
 type Converts struct {
-	//fyneSettings app.SettingsSchema
 	config     config.Config
 	lang       i18n.Converts
-	inputPath  string
+	inputFile  string
 	outputPath string
 }
 
@@ -39,7 +38,7 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 	top := widget.NewGroup(c.lang.Title, c.makeConvertTab(w))
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Run", Style: widget.PrimaryButton, OnTapped: func() {
-			work := conversion.RandomWork(c.config.Conversion)
+			work := conversion.RandomWork(c.config.Conversion, c.inputFile)
 			fmt.Println(work.ID())
 			conversion.AddWorker(work)
 			err := conversion.Start()

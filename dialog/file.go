@@ -1,7 +1,6 @@
 package dialog
 
 import (
-	fdialog "fyne.io/fyne/dialog"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -9,19 +8,15 @@ import (
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
+	fdialog "fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/storage"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
 
-type textWidget interface {
-	fyne.Widget
-	SetText(string)
-}
-
-type folderDialog struct {
-	file       *FolderDialog
+type fileDialog struct {
+	file       *FileDialog
 	fileName   textWidget
 	dismiss    *widget.Button
 	open       *widget.Button
@@ -30,29 +25,43 @@ type folderDialog struct {
 	fileScroll *widget.ScrollContainer
 
 	win      *widget.PopUp
-	selected *folderDialogItem
+	selected *fileDialogItem
 	dir      string
 }
 
-// FolderDialog is a dialog containing a file picker for use in opening or saving files.
-type FolderDialog struct {
-	//save             bool
+// FileDialog is a dialog containing a file picker for use in opening or saving files.
+type FileDialog struct {
+	save             bool
 	callback         interface{}
 	onClosedCallback func(bool)
 	filter           storage.FileFilter
 	parent           fyne.Window
-	dialog           *folderDialog
+	dialog           *fileDialog
 	dismissText      string
 }
 
 // Declare conformity to Dialog interface
-var _ fdialog.Dialog = (*FolderDialog)(nil)
+var _ fdialog.Dialog = (*FileDialog)(nil)
 
-func (f *folderDialog) makeUI() fyne.CanvasObject {
-
-	f.fileName = widget.NewLabel("")
+func (f *fileDialog) makeUI() fyne.CanvasObject {
+	if f.file.save {
+		saveName := widget.NewEntry()
+		saveName.OnChanged = func(s string) {
+			if s == "" {
+				f.open.Disable()
+			} else {
+				f.open.Enable()
+			}
+		}
+		f.fileName = saveName
+	} else {
+		f.fileName = widget.NewLabel("")
+	}
 
 	label := "Open"
+	if f.file.save {
+		label = "Save"
+	}
 	f.open = widget.NewButton(label, func() {
 		if f.file.callback == nil {
 			f.win.Hide()
@@ -62,13 +71,45 @@ func (f *folderDialog) makeUI() fyne.CanvasObject {
 			return
 		}
 
-		if f.selected != nil {
-			callback := f.file.callback.(func(string, error))
+		if f.file.save {
+			callback := f.file.callback.(func(string))
+			name := f.fileName.(*widget.Entry).Text
+			path := filepath.Join(f.dir, name)
+
+			info, err := os.Stat(path)
+			if os.IsNotExist(err) {
+				f.win.Hide()
+				if f.file.onClosedCallback != nil {
+					f.file.onClosedCallback(true)
+				}
+				callback(path)
+				return
+			} else if info.IsDir() {
+				ShowInformation("Cannot overwrite",
+					"Files cannot replace a directory,\ncheck the file name and try again", f.file.parent)
+				return
+			}
+
+			ShowConfirm("Overwrite?", "Are you sure you want to overwrite the file\n"+name+"?",
+				func(ok bool) {
+					f.win.Hide()
+					if !ok {
+						callback("")
+						return
+					}
+
+					callback(path)
+					if f.file.onClosedCallback != nil {
+						f.file.onClosedCallback(true)
+					}
+				}, f.file.parent)
+		} else if f.selected != nil {
+			callback := f.file.callback.(func(string))
 			f.win.Hide()
 			if f.file.onClosedCallback != nil {
 				f.file.onClosedCallback(true)
 			}
-			callback(f.selected.path, nil)
+			callback(f.selected.path)
 		}
 	})
 	f.open.Style = widget.PrimaryButton
@@ -83,7 +124,11 @@ func (f *folderDialog) makeUI() fyne.CanvasObject {
 			f.file.onClosedCallback(false)
 		}
 		if f.file.callback != nil {
-			f.file.callback.(func(string, error))("", nil)
+			if f.file.save {
+				f.file.callback.(func(string))("")
+			} else {
+				f.file.callback.(func(string))("")
+			}
 		}
 	})
 	buttons := widget.NewHBox(f.dismiss, f.open)
@@ -108,7 +153,7 @@ func (f *folderDialog) makeUI() fyne.CanvasObject {
 		favorites, header, footer, body)
 }
 
-func (f *folderDialog) loadFavorites() []fyne.CanvasObject {
+func (f *fileDialog) loadFavorites() []fyne.CanvasObject {
 	home, _ := os.UserHomeDir()
 	places := []fyne.CanvasObject{
 		widget.NewButton("Home", func() {
@@ -126,7 +171,7 @@ func (f *folderDialog) loadFavorites() []fyne.CanvasObject {
 	return places
 }
 
-func (f *folderDialog) refreshDir(dir string) {
+func (f *fileDialog) refreshDir(dir string) {
 	f.files.Objects = nil
 
 	files, err := ioutil.ReadDir(dir)
@@ -138,18 +183,21 @@ func (f *folderDialog) refreshDir(dir string) {
 	var icons []fyne.CanvasObject
 	parent := filepath.Dir(dir)
 	if parent != dir {
-		fi := &folderDialogItem{picker: f, icon: canvas.NewImageFromResource(theme.FolderOpenIcon()),
-			name: "(Parent)", path: filepath.Dir(dir)}
+		fi := &fileDialogItem{picker: f, icon: canvas.NewImageFromResource(theme.FolderOpenIcon()),
+			name: "(Parent)", path: filepath.Dir(dir), dir: true}
 		fi.ExtendBaseWidget(fi)
 		icons = append(icons, fi)
 	}
 	for _, file := range files {
-		if !file.IsDir() {
+		if isHidden(file.Name(), dir) {
 			continue
 		}
 		itemPath := filepath.Join(dir, file.Name())
-		icons = append(icons, f.newFolderItem(itemPath))
-
+		if file.IsDir() {
+			icons = append(icons, f.newFileItem(itemPath, true))
+		} else if f.file.filter == nil || f.file.filter.Matches(storage.NewURI("file://"+itemPath)) {
+			icons = append(icons, f.newFileItem(itemPath, false))
+		}
 	}
 
 	f.files.Objects = icons
@@ -158,7 +206,7 @@ func (f *folderDialog) refreshDir(dir string) {
 	f.fileScroll.Refresh()
 }
 
-func (f *folderDialog) setDirectory(dir string) {
+func (f *fileDialog) setDirectory(dir string) {
 	f.setSelected(nil)
 	f.dir = dir
 
@@ -189,13 +237,14 @@ func (f *folderDialog) setDirectory(dir string) {
 	f.refreshDir(dir)
 }
 
-func (f *folderDialog) setSelected(file *folderDialogItem) {
+func (f *fileDialog) setSelected(file *fileDialogItem) {
 	if f.selected != nil {
 		f.selected.isCurrent = false
 		f.selected.Refresh()
 	}
 	if file != nil && file.isDirectory() {
 		f.setDirectory(file.path)
+		return
 	}
 	f.selected = file
 
@@ -217,7 +266,7 @@ func (f *folderDialog) setSelected(file *folderDialogItem) {
 //
 // * os.UserHomeDir()
 // * "/" (should be filesystem root on all supported platforms)
-func (f *FolderDialog) effectiveStartingDir() string {
+func (f *FileDialog) effectiveStartingDir() string {
 
 	// Try home dir
 	dir, err := os.UserHomeDir()
@@ -229,8 +278,8 @@ func (f *FolderDialog) effectiveStartingDir() string {
 	return "/"
 }
 
-func showFolder(file *FolderDialog) *folderDialog {
-	d := &folderDialog{file: file}
+func showFile(file *FileDialog) *fileDialog {
+	d := &fileDialog{file: file}
 	ui := d.makeUI()
 
 	d.setDirectory(file.effectiveStartingDir())
@@ -246,19 +295,25 @@ func showFolder(file *FolderDialog) *folderDialog {
 }
 
 // Show shows the file dialog.
-func (f *FolderDialog) Show() {
-	if folderOpenOSOverride(f) {
-		return
+func (f *FileDialog) Show() {
+	if f.save {
+		if fileSaveOSOverride(f) {
+			return
+		}
+	} else {
+		if fileOpenOSOverride(f) {
+			return
+		}
 	}
 	if f.dialog != nil {
 		f.dialog.win.Show()
 		return
 	}
-	f.dialog = showFolder(f)
+	f.dialog = showFile(f)
 }
 
 // Hide hides the file dialog.
-func (f *FolderDialog) Hide() {
+func (f *FileDialog) Hide() {
 	if f.dialog == nil {
 		return
 	}
@@ -269,7 +324,7 @@ func (f *FolderDialog) Hide() {
 }
 
 // SetDismissText allows custom text to be set in the confirmation button
-func (f *FolderDialog) SetDismissText(label string) {
+func (f *FileDialog) SetDismissText(label string) {
 	if f.dialog == nil {
 		return
 	}
@@ -279,7 +334,7 @@ func (f *FolderDialog) SetDismissText(label string) {
 
 // SetOnClosed sets a callback function that is called when
 // the dialog is closed.
-func (f *FolderDialog) SetOnClosed(closed func()) {
+func (f *FileDialog) SetOnClosed(closed func()) {
 	if f.dialog == nil {
 		return
 	}
@@ -295,25 +350,44 @@ func (f *FolderDialog) SetOnClosed(closed func()) {
 }
 
 // SetFilter sets a filter for limiting files that can be chosen in the file dialog.
-func (f *FolderDialog) SetFilter(filter storage.FileFilter) {
+func (f *FileDialog) SetFilter(filter storage.FileFilter) {
 	f.filter = filter
 	if f.dialog != nil {
 		f.dialog.refreshDir(f.dialog.dir)
 	}
 }
 
-// NewFolderOpen creates a file dialog allowing the user to choose a file to open.
+// NewFileOpen creates a file dialog allowing the user to choose a file to open.
 // The dialog will appear over the window specified when Show() is called.
-func NewFolderOpen(callback func(string, error), parent fyne.Window) *FolderDialog {
-	dialog := &FolderDialog{callback: callback, parent: parent}
+func NewFileOpen(callback func(string), parent fyne.Window) *FileDialog {
+	dialog := &FileDialog{callback: callback, parent: parent}
 	return dialog
 }
 
-// ShowFolderOpen creates and shows a file dialog allowing the user to choose a file to open.
+// NewFileSave creates a file dialog allowing the user to choose a file to save to (new or overwrite).
+// If the user chooses an existing file they will be asked if they are sure.
+// The dialog will appear over the window specified when Show() is called.
+func NewFileSave(callback func(string), parent fyne.Window) *FileDialog {
+	dialog := &FileDialog{callback: callback, parent: parent, save: true}
+	return dialog
+}
+
+// ShowFileOpen creates and shows a file dialog allowing the user to choose a file to open.
 // The dialog will appear over the window specified.
-func ShowFolderOpen(callback func(string, error), parent fyne.Window) {
-	dialog := NewFolderOpen(callback, parent)
-	if folderOpenOSOverride(dialog) {
+func ShowFileOpen(callback func(string), parent fyne.Window) {
+	dialog := NewFileOpen(callback, parent)
+	if fileOpenOSOverride(dialog) {
+		return
+	}
+	dialog.Show()
+}
+
+// ShowFileSave creates and shows a file dialog allowing the user to choose a file to save to (new or overwrite).
+// If the user chooses an existing file they will be asked if they are sure.
+// The dialog will appear over the window specified.
+func ShowFileSave(callback func(string), parent fyne.Window) {
+	dialog := NewFileSave(callback, parent)
+	if fileSaveOSOverride(dialog) {
 		return
 	}
 	dialog.Show()

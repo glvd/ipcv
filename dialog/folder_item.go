@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	fileIconSize      = 64
-	fileTextSize      = 24
-	fileIconCellWidth = fileIconSize * 1.25
+	folderIconSize      = 64
+	folderTextSize      = 24
+	folderIconCellWidth = folderIconSize * 1.25
 )
 
 type folderDialogItem struct {
@@ -38,16 +38,8 @@ func (i *folderDialogItem) CreateRenderer() fyne.WidgetRenderer {
 	text := widget.NewLabelWithStyle(i.name, fyne.TextAlignCenter, fyne.TextStyle{})
 	text.Wrapping = fyne.TextTruncate
 
-	return &fileItemRenderer{item: i,
+	return &folderItemRenderer{item: i,
 		img: i.icon, text: text, objects: []fyne.CanvasObject{i.icon, text}}
-}
-
-func fileName(path string) (name string) {
-	name = filepath.Base(path)
-	ext := filepath.Ext(path)
-	name = name[:len(name)-len(ext)]
-
-	return
 }
 
 func (i *folderDialogItem) isDirectory() bool {
@@ -68,7 +60,7 @@ func (f *folderDialog) newFolderItem(path string) *folderDialogItem {
 	return ret
 }
 
-type fileItemRenderer struct {
+type folderItemRenderer struct {
 	item *folderDialogItem
 
 	img     fyne.CanvasObject
@@ -76,33 +68,33 @@ type fileItemRenderer struct {
 	objects []fyne.CanvasObject
 }
 
-func (s fileItemRenderer) Layout(size fyne.Size) {
-	iconAlign := (size.Width - fileIconSize) / 2
-	s.img.Resize(fyne.NewSize(fileIconSize, fileIconSize))
+func (s folderItemRenderer) Layout(size fyne.Size) {
+	iconAlign := (size.Width - folderIconSize) / 2
+	s.img.Resize(fyne.NewSize(folderIconSize, folderIconSize))
 	s.img.Move(fyne.NewPos(iconAlign, 0))
 
-	s.text.Resize(fyne.NewSize(size.Width, fileTextSize))
-	s.text.Move(fyne.NewPos(0, fileIconSize+theme.Padding()))
+	s.text.Resize(fyne.NewSize(size.Width, folderTextSize))
+	s.text.Move(fyne.NewPos(0, folderIconSize+theme.Padding()))
 }
 
-func (s fileItemRenderer) MinSize() fyne.Size {
-	return fyne.NewSize(fileIconSize, fileIconSize+fileTextSize+theme.Padding())
+func (s folderItemRenderer) MinSize() fyne.Size {
+	return fyne.NewSize(folderIconSize, folderIconSize+folderTextSize+theme.Padding())
 }
 
-func (s fileItemRenderer) Refresh() {
+func (s folderItemRenderer) Refresh() {
 	canvas.Refresh(s.item)
 }
 
-func (s fileItemRenderer) BackgroundColor() color.Color {
+func (s folderItemRenderer) BackgroundColor() color.Color {
 	if s.item.isCurrent {
 		return theme.PrimaryColor()
 	}
 	return theme.BackgroundColor()
 }
 
-func (s fileItemRenderer) Objects() []fyne.CanvasObject {
+func (s folderItemRenderer) Objects() []fyne.CanvasObject {
 	return s.objects
 }
 
-func (s fileItemRenderer) Destroy() {
+func (s folderItemRenderer) Destroy() {
 }

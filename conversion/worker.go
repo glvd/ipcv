@@ -2,6 +2,7 @@ package conversion
 
 import (
 	"context"
+	"fmt"
 	"github.com/glvd/go-media-tool"
 	"github.com/glvd/ipcv/config"
 	"github.com/google/uuid"
@@ -28,6 +29,7 @@ type work struct {
 	id       string
 	status   *atomic.String
 	filepath string
+	hook     func(msg string)
 }
 
 var _ Worker = &work{}
@@ -60,10 +62,12 @@ func (w *work) SetStatus(status string) {
 
 func (w *work) Run() {
 	w.SetStatus(WorkStateRunning)
+	w.ctx, w.cancel = context.WithCancel(context.TODO())
 	ff := tool.NewFFMpeg()
+	ff.HandleMessage(w.messageCallback)
 	err := ff.Run(w.ctx, w.filepath)
 	if err != nil {
-		return
+		panic(err)
 	}
 }
 
@@ -71,8 +75,13 @@ func (w *work) Stop() {
 	w.SetStatus(WorkStateStop)
 }
 
-func (w *work) HookInfo(f func(s string)) {
-	if f != nil {
-		f("write some string")
+func (w *work) messageCallback(message string) {
+	if w.hook != nil {
+		fmt.Println(message)
+		w.hook(message)
 	}
+}
+
+func (w *work) HookInfo(f func(s string)) {
+	w.hook = f
 }
