@@ -13,8 +13,8 @@ github.com/fsnotify/fsnotify v1.4.9 h1:hsms1Qyu0jgnwNXIxa+/V/PDsU6CfLf6CNO8H7IWo
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
 github.com/fyne-io/mobile v0.0.2 h1:eGmCR5lkFxk0PnPafGppLFRD5QODJfSVdrjhLjanOVg=
 github.com/fyne-io/mobile v0.0.2/go.mod h1:/kOrWrZB6sasLbEy2JIvr4arEzQTXBTZGb3Y96yWbHY=
-github.com/glvd/go-fftool v0.0.9 h1:CfhUW/KZcwtBLjizDcrNz7fdZ3JDq6We5FIoIKAD5gA=
-github.com/glvd/go-fftool v0.0.9/go.mod h1:KpKbaiA/CqvK+Ds/Id9jazxfFy9yFL6Dh7WGxyk3tpY=
+github.com/glvd/go-media-tool v0.0.10 h1:z55x2eAOzsGrTj3MZLOGMv9tep7HRyvzfDQlb7cWTrY=
+github.com/glvd/go-media-tool v0.0.10/go.mod h1:8PmQ0/ad8BP4Eo+Hi+Pc4mfyJDuGk43kkkE1ol+UnG4=
 github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7 h1:SCYMcCJ89LjRGwEa0tRluNRiMjZHalQZrVrvTbPh+qw=
 github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7/go.mod h1:482civXOzJJCPzJ4ZOX/pwvXBWSnzD4OKMdH4ClKGbk=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200625191551-73d3c3675aa3 h1:q521PfSp5/z6/sD9FZZOWj4d1MLmfQW8PkRnI9M6PCE=

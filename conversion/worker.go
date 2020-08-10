@@ -2,6 +2,7 @@ package conversion
 
 import (
 	"context"
+	"github.com/glvd/go-media-tool"
 	"github.com/glvd/ipcv/config"
 	"github.com/google/uuid"
 	"go.uber.org/atomic"
@@ -21,26 +22,28 @@ type Worker interface {
 }
 
 type work struct {
-	ctx    context.Context
-	cancel context.CancelFunc
-	cfg    config.Conversion
-	id     string
-	status *atomic.String
+	ctx      context.Context
+	cancel   context.CancelFunc
+	cfg      config.Conversion
+	id       string
+	status   *atomic.String
+	filepath string
 }
 
 var _ Worker = &work{}
 
-func NewWork(cfg config.Conversion, id string) Worker {
+func NewWork(cfg config.Conversion, path string, id string) Worker {
 	return &work{
-		cfg:    cfg,
-		id:     id,
-		status: atomic.NewString(""),
+		cfg:      cfg,
+		id:       id,
+		filepath: path,
+		status:   atomic.NewString(WorkStateStop),
 	}
 }
 
-func RandomWork(cfg config.Conversion) Worker {
+func RandomWork(cfg config.Conversion, path string) Worker {
 	id := uuid.Must(uuid.NewRandom()).String()
-	return NewWork(cfg, id)
+	return NewWork(cfg, path, id)
 }
 
 func (w work) ID() string {
@@ -57,6 +60,11 @@ func (w *work) SetStatus(status string) {
 
 func (w *work) Run() {
 	w.SetStatus(WorkStateRunning)
+	ff := tool.NewFFMpeg()
+	err := ff.Run(w.ctx, w.filepath)
+	if err != nil {
+		return
+	}
 }
 
 func (w *work) Stop() {
