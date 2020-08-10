@@ -12,8 +12,8 @@ import (
 type Task struct {
 	ctx       context.Context
 	cancel    context.CancelFunc
-	works     sync.Pool
-	workStore sync.Map
+	works     *sync.Pool
+	workStore *sync.Map
 	running   *atomic.Bool
 	routines  *atomic.Int32
 	MaxLimit  int32
@@ -59,6 +59,7 @@ func (t *Task) run() {
 			return
 		}
 		if t.routines.Load() <= t.MaxLimit {
+			fmt.Println("running:", t.routines.Load(), "max:", t.MaxLimit)
 			work := t.getWork()
 			if work != nil {
 				t.routines.Add(1)
@@ -68,7 +69,7 @@ func (t *Task) run() {
 				time.Sleep(3 * time.Second)
 			}
 		} else {
-			fmt.Println("task running,no work sleeping")
+			fmt.Println("task running,no limit sleeping")
 			time.Sleep(30 * time.Second)
 			continue
 		}
@@ -79,12 +80,16 @@ func Start() error {
 	return _task.Start()
 }
 
+func (t *Task) IsRunning() bool {
+	return t.running.Load()
+}
+
 // Start ...
 func (t *Task) Start() error {
 	if t.running.CAS(false, true) {
 		t.ctx, t.cancel = context.WithCancel(context.TODO())
+		go t.run()
 	}
-	go t.run()
 	return nil
 }
 
@@ -111,22 +116,23 @@ func (t *Task) GetWorker(id string) Worker {
 
 func (t *Task) getWork() Worker {
 	if v := t.works.Get(); v != nil {
+		fmt.Println("new work", v.(Worker).ID())
 		return v.(Worker)
 	}
 	return nil
 }
 
 func (t *Task) startWork(worker Worker) {
-
 	defer t.routines.Add(-1)
+	time.Sleep(5 * time.Second)
 	worker.Run()
 }
 
 // NewTask ...
 func NewTask() *Task {
 	return &Task{
-		works:     sync.Pool{},
-		workStore: sync.Map{},
+		works:     &sync.Pool{},
+		workStore: &sync.Map{},
 		running:   atomic.NewBool(false),
 		routines:  atomic.NewInt32(0),
 		MaxLimit:  DefaultMaxLimit,
