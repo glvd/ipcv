@@ -63,14 +63,14 @@ func (t *Task) run() {
 			work := t.getWork()
 			if work != nil {
 				t.routines.Add(1)
-				go t.startWork(work)
+				go t.startWork(t.ctx, work)
 			} else {
 				fmt.Println("task running")
 				time.Sleep(3 * time.Second)
 			}
 		} else {
 			fmt.Println("task running,no limit sleeping")
-			time.Sleep(30 * time.Second)
+			time.Sleep(5 * time.Second)
 			continue
 		}
 	}
@@ -95,10 +95,14 @@ func (t *Task) Start() error {
 
 // StopWork ...
 func (t *Task) StopWork(id string) {
-
+	worker := t.GetWorker(id)
+	if worker.Status() == WorkStateRunning {
+		worker.Stop()
+	}
 }
 
 func (t *Task) checkWork(work Worker) error {
+	//check work rule
 	return nil
 }
 
@@ -122,7 +126,7 @@ func (t *Task) getWork() Worker {
 	return nil
 }
 
-func (t *Task) startWork(worker Worker) {
+func (t *Task) startWork(ctx context.Context, worker Worker) {
 	defer t.routines.Add(-1)
 	time.Sleep(5 * time.Second)
 	worker.Run()
