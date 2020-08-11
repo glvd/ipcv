@@ -2,6 +2,7 @@ package settings
 
 import (
 	"encoding/json"
+	tool "github.com/glvd/go-media-tool"
 	"github.com/glvd/ipcv/config"
 	"github.com/glvd/ipcv/i18n"
 	"os"
@@ -61,6 +62,7 @@ func (s *Settings) LoadSettingScreen(w fyne.Window) fyne.CanvasObject {
 			if err != nil {
 				fyne.LogError("failed on saving", err)
 			}
+			tool.DefaultMpegName = s.config.Conversion.FFMPEG
 			s.appliedScale(s.config.System.Setting.Scale)
 		}})
 

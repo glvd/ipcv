@@ -38,6 +38,7 @@ func (c *Converts) LoadConvertScreen(w fyne.Window) fyne.CanvasObject {
 	top := widget.NewGroup(c.lang.Title, c.makeConvertTab(w))
 	bottom := widget.NewHBox(layout.NewSpacer(),
 		&widget.Button{Text: "Run", Style: widget.PrimaryButton, OnTapped: func() {
+
 			work := conversion.RandomWork(c.config.Conversion, c.inputFile)
 			fmt.Println(work.ID())
 			conversion.AddWorker(work)
