@@ -45,6 +45,28 @@ func (s *Settings) makeFFMpeg(w fyne.Window) fyne.CanvasObject {
 			text.SetText(name)
 		}, w)
 	})
-	box := widget.NewHBox(layout.NewSpacer(), button)
-	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, box)
+	//box := widget.NewHBox(layout.NewSpacer(), button)
+	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, button)
+}
+
+func (s *Settings) makeFFmpegVersionLabel(w fyne.Window) fyne.CanvasObject {
+	text := widget.NewEntry()
+	name := s.config.Conversion.FFMPEG
+	if len(s.config.Conversion.FFMPEG) > 60 {
+		name = name[0:60] + "..."
+	}
+	text.SetText(name)
+	text.Disable()
+	button := widget.NewButton(s.lang.Conversion.FFMpegButton, func() {
+		dialog.ShowFileOpen(func(str string) {
+			s.config.Conversion.FFMPEG = str
+			name := s.config.Conversion.FFMPEG
+			if len(s.config.Conversion.FFMPEG) > 60 {
+				name = name[0:60] + "..."
+			}
+			text.SetText(name)
+		}, w)
+	})
+	//box := widget.NewHBox(layout.NewSpacer(), button)
+	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, button)
 }
