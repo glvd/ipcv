@@ -23,6 +23,8 @@ type SettingSystem struct {
 
 type SettingConversion struct {
 	Title string
+	//FFMpegTitle  string
+	FFMpegButton string
 }
 
 type Settings struct {
@@ -112,7 +114,8 @@ func defaultLanguage() *Language {
 				Accelerate:       "Accelerate",
 			},
 			Conversion: SettingConversion{
-				Title: "Conversion",
+				Title:        "Conversion",
+				FFMpegButton: "Open",
 			},
 		},
 		ConvertName: convertName,
