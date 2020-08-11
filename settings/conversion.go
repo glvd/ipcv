@@ -48,8 +48,8 @@ func (s *Settings) makeFFMpeg(w fyne.Window) fyne.CanvasObject {
 			text.SetText(name)
 		}, w)
 	})
-	//box := widget.NewHBox(layout.NewSpacer(), button)
-	return widget.NewVBox(label, text, button)
+	contianer := fyne.NewContainerWithLayout(layout.NewGridLayout(2), label, button)
+	return widget.NewVBox(contianer, button)
 }
 
 func (s *Settings) makeFFmpegVersionLabel(w fyne.Window) fyne.CanvasObject {
