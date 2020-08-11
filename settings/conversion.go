@@ -27,7 +27,7 @@ func (s *Settings) chooseAcc(v string) {
 }
 
 func (s *Settings) makeFFMpeg(w fyne.Window) fyne.CanvasObject {
-	//label := widget.NewLabel(c.lang.Input.Label)
+	label := widget.NewLabel(s.lang.Conversion.Title)
 	text := widget.NewEntry()
 	name := s.config.Conversion.FFMPEG
 	if len(s.config.Conversion.FFMPEG) > 60 {
@@ -37,6 +37,9 @@ func (s *Settings) makeFFMpeg(w fyne.Window) fyne.CanvasObject {
 	text.Disable()
 	button := widget.NewButton(s.lang.Conversion.FFMpegButton, func() {
 		dialog.ShowFileOpen(func(str string) {
+			if str == "" {
+				return
+			}
 			s.config.Conversion.FFMPEG = str
 			name := s.config.Conversion.FFMPEG
 			if len(s.config.Conversion.FFMPEG) > 60 {
@@ -46,7 +49,7 @@ func (s *Settings) makeFFMpeg(w fyne.Window) fyne.CanvasObject {
 		}, w)
 	})
 	//box := widget.NewHBox(layout.NewSpacer(), button)
-	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, button)
+	return widget.NewVBox(label, text, button)
 }
 
 func (s *Settings) makeFFmpegVersionLabel(w fyne.Window) fyne.CanvasObject {
