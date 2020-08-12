@@ -68,7 +68,7 @@ func (w *work) Run() {
 	ff.HandleMessage(w.messageCallback)
 	err := ff.Run(w.ctx, w.filepath)
 	if err != nil {
-		panic(err)
+		return
 	}
 }
 
