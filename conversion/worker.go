@@ -61,6 +61,7 @@ func (w *work) SetStatus(status string) {
 }
 
 func (w *work) Run() {
+	tool.DefaultMpegName = w.cfg.FFMPEG
 	w.SetStatus(WorkStateRunning)
 	w.ctx, w.cancel = context.WithCancel(context.TODO())
 	ff := tool.NewFFMpeg()
@@ -76,8 +77,8 @@ func (w *work) Stop() {
 }
 
 func (w *work) messageCallback(message string) {
+	fmt.Println(message)
 	if w.hook != nil {
-		fmt.Println(message)
 		w.hook(message)
 	}
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
-	//label := widget.NewLabel(c.lang.Input.Label)
+	label := widget.NewLabel(c.lang.Input.Label)
 	text := widget.NewEntry()
 	text.Disable()
 	button := widget.NewButton(c.lang.Input.Button, func() {
@@ -21,10 +21,11 @@ func (c *Converts) makeInputConvert(w fyne.Window) fyne.CanvasObject {
 			text.SetText(name)
 		}, w)
 	})
-	box := widget.NewHBox(layout.NewSpacer(), button)
-	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, box)
+	container := fyne.NewContainerWithLayout(layout.NewGridLayout(2), label, button)
+	return widget.NewVBox(container, text)
 }
 func (c *Converts) makeOutputConvert(w fyne.Window) fyne.CanvasObject {
+	label := widget.NewLabel(c.lang.Output.Label)
 	text := widget.NewEntry()
 	text.Disable()
 	button := widget.NewButton(c.lang.Output.Button, func() {
@@ -36,6 +37,6 @@ func (c *Converts) makeOutputConvert(w fyne.Window) fyne.CanvasObject {
 			text.SetText(s)
 		}, w)
 	})
-	box := widget.NewHBox(layout.NewSpacer(), button)
-	return fyne.NewContainerWithLayout(layout.NewVBoxLayout(), text, box)
+	container := fyne.NewContainerWithLayout(layout.NewGridLayout(2), label, button)
+	return widget.NewVBox(container, text)
 }
