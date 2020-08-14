@@ -20,7 +20,7 @@ type Task struct {
 }
 
 // DefaultLimit ...
-var DefaultMaxLimit int32 = 3
+var DefaultMaxLimit int32 = 2
 var _task *Task
 
 func init() {
@@ -58,7 +58,7 @@ func (t *Task) run() {
 		if !t.running.Load() {
 			return
 		}
-		if t.routines.Load() <= t.MaxLimit {
+		if t.routines.Load() < t.MaxLimit {
 			fmt.Println("running:", t.routines.Load(), "max:", t.MaxLimit)
 			work := t.getWork()
 			if work != nil {

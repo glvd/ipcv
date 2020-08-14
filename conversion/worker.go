@@ -64,7 +64,10 @@ func (w *work) Run() {
 	tool.DefaultMpegName = w.cfg.FFMPEG
 	w.SetStatus(WorkStateRunning)
 	w.ctx, w.cancel = context.WithCancel(context.TODO())
-	ff := tool.NewFFMpeg()
+	cfg := tool.DefaultConfig()
+	cfg.ProcessCore = tool.ProcessH264NVENC
+	cfg.Slice = true
+	ff := tool.NewFFMpeg(cfg.ConfigOptions())
 	ff.HandleMessage(w.messageCallback)
 	err := ff.Run(w.ctx, w.filepath)
 	if err != nil {
