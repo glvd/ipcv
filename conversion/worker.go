@@ -16,20 +16,21 @@ const (
 
 type Worker interface {
 	ID() string
-	Run()
+	Run(ctx context.Context)
 	Status() string
 	Stop()
 	HookInfo(f func(s string))
 }
 
 type work struct {
-	ctx      context.Context
-	cancel   context.CancelFunc
-	cfg      config.Conversion
-	id       string
-	status   *atomic.String
-	filepath string
-	hook     func(msg string)
+	ctx         context.Context
+	cancel      context.CancelFunc
+	cfg         config.Conversion
+	mediaConfig *tool.Config
+	id          string
+	status      *atomic.String
+	filepath    string
+	hook        func(msg string)
 }
 
 var _ Worker = &work{}
@@ -60,14 +61,15 @@ func (w *work) SetStatus(status string) {
 	w.status.Store(status)
 }
 
-func (w *work) Run() {
+func (w *work) Run(ctx context.Context) {
 	tool.DefaultMpegName = w.cfg.FFMPEG
 	w.SetStatus(WorkStateRunning)
-	w.ctx, w.cancel = context.WithCancel(context.TODO())
-	cfg := tool.DefaultConfig()
-	cfg.ProcessCore = tool.ProcessH264NVENC
-	cfg.Slice = true
-	ff := tool.NewFFMpeg(cfg.ConfigOptions())
+	w.ctx, w.cancel = context.WithCancel(ctx)
+	defer w.cancel()
+	if w.mediaConfig == nil {
+		w.mediaConfig = tool.DefaultConfig()
+	}
+	ff := tool.NewFFMpeg(w.mediaConfig.ConfigOptions())
 	ff.HandleMessage(w.messageCallback)
 	err := ff.Run(w.ctx, w.filepath)
 	if err != nil {
@@ -75,8 +77,17 @@ func (w *work) Run() {
 	}
 }
 
+func (w *work) MediaConfig() *tool.Config {
+	return w.mediaConfig
+}
+
+func (w *work) SetMediaConfig(mediaConfig *tool.Config) {
+	w.mediaConfig = mediaConfig
+}
+
 func (w *work) Stop() {
 	w.SetStatus(WorkStateStop)
+	w.cancel()
 }
 
 func (w *work) messageCallback(message string) {
